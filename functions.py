@@ -9,7 +9,7 @@ import warnings
 from shapely.errors import ShapelyDeprecationWarning
 #from etl_functions import find_mongo
 from datetime import datetime
-from pymongo import MongoClient
+#from pymongo import MongoClient
 import requests
 from bs4 import BeautifulSoup
 from pytrends.request import TrendReq
@@ -72,44 +72,7 @@ class GeoEstimation():
     ax.set_title(f'Pesqusas por "{self.app}" no Google ({self.start_date} : {self.final_date})')
     ax.axis("off")
     plt.savefig(f'maps/{self.app}_{self.country}_map.png')
-   
-  def search_appid(self):
-    url = f'https://play.google.com/store/search?q={self.app.replace(" ", "+")}&c=apps'
-    req = requests.get(url).content.decode("utf-8")
-    soup = BeautifulSoup(req)
-    #nome_app = str(soup.find('div', class_="vWM94c")).split('"vWM94c">')[1].split(':')[0]
-    #nome_app = str(soup.find('div', class_="vWM94c")).split('"vWM94c">')[1].split('</div')[0]
-    app_id = str(soup.find('a', class_="Qfxief")).split('id=')[1].split('"><')[0]
     
-    data_inicial = datetime.strptime(self.start_date, '%d-%m-%Y').strftime('%Y-%m-%d')
-    data_final = datetime.strptime(self.final_date, '%d-%m-%Y').strftime('%Y-%m-%d')
-    print('Buscando dados...')
-    '''
-    find_gplay = find_mongo('mongodb://thiago.montenegro:yRhyNTj-PRO6VKnsmvIYkzwav@mongo.stg.rankmylan.com:27017/?authSource=admin&authMechanism=SCRAM-SHA-256',
-                         'ReviewsGplay.ratings',
-                         {"appId":app_id}
-                         )
-    df_gplay = pd.concat([pd.DataFrame.from_dict(i, orient='index').T for i in find_gplay])
-    df_gplay['createdAt'] = pd.to_datetime(df_gplay["createdAt"].dt.strftime('%Y-%m-%d'))
-    print('Dados google OK')
-    '''
-    
-    '''find_gplay = find_mongo('mongodb://thiago.montenegro:yRhyNTj-PRO6VKnsmvIYkzwav@mongo.stg.rankmylan.com:27017/?authSource=admin&authMechanism=SCRAM-SHA-256',
-                         'gplaystore.dailyDownloadsEstimations',
-                         {"appId":app_id}
-                         )
-    df_gplay = pd.concat([pd.DataFrame.from_dict(i, orient='index').T for i in find_gplay])
-    df_gplay['date'] = pd.to_datetime(df_gplay["date"].dt.strftime('%Y-%m-%d'))
-    df_gplay = df_gplay[(df_gplay['date'] >= data_inicial) & (df_gplay['date'] <= data_final)]'''
-    
-    return {
-            'var_downloads': df_gplay.iloc[0]['newInstalls'] - df_gplay.iloc[-1]['newInstalls']
-            }
-
-
-    
-
-
 
   def get_municip(self, estado):
         '''
