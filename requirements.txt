@@ -15,3 +15,4 @@ contextily
 openpyxl
 sklearn
 splot
+streamlit
