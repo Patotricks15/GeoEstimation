@@ -5,7 +5,6 @@ matplotlib
 unidecode
 googletrends
 shapely
-warnings
 requests
 bs4
 pytrends
