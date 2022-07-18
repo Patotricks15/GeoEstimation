@@ -9,7 +9,6 @@ requests
 bs4
 pytrends
 geopandas
-dateutil
 seaborn
 pysal
 contextily
