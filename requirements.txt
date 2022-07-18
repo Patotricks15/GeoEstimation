@@ -1,5 +1,6 @@
 numpy==1.21.0
 click==7.0
+cffi==1.15.1
 pandas
 geobr
 matplotlib
