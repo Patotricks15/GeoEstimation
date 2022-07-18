@@ -1,12 +1,9 @@
-numpy
-pandas
+numpy==1.21.0
+pandas==1.0.5
 geobr
 matplotlib
-unidecode
 googletrends
 shapely
-requests
-bs4
 pytrends
 geopandas
 seaborn
@@ -15,4 +12,4 @@ contextily
 openpyxl
 sklearn
 splot
-streamlit
+streamlit==0.84.2
