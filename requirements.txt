@@ -4,6 +4,7 @@ geobr
 matplotlib
 googletrends
 shapely
+unidecode
 pytrends
 geopandas
 seaborn
