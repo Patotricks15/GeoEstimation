@@ -1,5 +1,5 @@
 numpy==1.21.0
-anaconda==1.15.1
+click==7.0
 pandas
 geobr
 matplotlib
