@@ -1,5 +1,4 @@
 numpy==1.21.0
-click==7.0
 cffi==1.15.1
 pandas
 geobr
@@ -15,4 +14,5 @@ contextily
 openpyxl
 sklearn
 splot
-streamlit==0.84.2
+click<=8.0.4
+streamlit
