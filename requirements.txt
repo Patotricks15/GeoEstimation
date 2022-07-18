@@ -12,7 +12,6 @@ geopandas
 seaborn
 pysal
 contextily
-json
 openpyxl
 sklearn
 splot
