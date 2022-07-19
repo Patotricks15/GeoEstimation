@@ -56,7 +56,7 @@ if st.button('Exibir mapa (País)'):
 
 
 if st.button('Visualizar tabela (Estado)'):
-
+    st.text('visualizar')
     #st.table(state_df[['name_muni', 'abbrev_state', 'populacao', 'pib', 'pib_per_capita','app', 'soma', 'max']+app])
 if st.button('Exibir mapa (Estado)'):
     for row, value in app_color_dict.iterrows():
