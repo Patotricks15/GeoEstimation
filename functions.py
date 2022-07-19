@@ -107,6 +107,7 @@ class GeoEstimation():
         dado = dado_estado.merge(df_final, how='left', on='name_muni').fillna(0)
         #df_final['geo_downloads_estimation'] = abs(round(df_muni[f'{self.app}_taxa'] * df_brasil[df_brasil['abbrev_state'] == self.estado]['geo_downloads_estimation'].values[0]))
         #dado.to_csv(f'excel_results/{self.country}/{self.app}_{self.estado}_with_geometry.csv')
+        dicionario.update({f'{self.app}_{self.estado}_with_geometry' : dado})
         return dado
     
   def municip_map(self, estado, cor): #novo parametro -> geoestimation_get_municip
