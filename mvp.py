@@ -26,6 +26,7 @@ state_sigla = {'SP':'State of São Paulo',
 'ES':'State of Espírito Santo',
 }
 
+dicionario_arquivos = {}
 
 data_inicial = st.text_input('Data inicial: dia-mes-ano')
 data_final = st.text_input('Data final: dia-mes-ano')
@@ -43,12 +44,12 @@ df_potencial = {'app':[],
 
 
 geo = GeoEstimation(app, pais, start_date=data_inicial, final_date=data_final)
-#state_df = social_dataframe(app, 'BR', estado=state, start_date=data_inicial, final_date=data_final)
-state_df = []
+state_df = social_dataframe(app, 'BR', estado=state, start_date=data_inicial, final_date=data_final, dicionario = dicionario_arquivos)
+#state_df = []
 
 
 if st.button('Visualizar tabela (País)'):
-    st.table(geo.dataframe().set_index('abbrev_state').drop(columns='geometry'))
+    st.table(geo.dataframe(dicionario_arquivos).set_index('abbrev_state').drop(columns='geometry'))
     
 if st.button('Exibir mapa (País)'):
     for row, value in app_color_dict.iterrows():
@@ -109,7 +110,7 @@ if st.button('tendencia'):
 
 if st.button('Clusters'):
     for j in app:
-        dado = read_geodata(f'excel_results/BR/{j}_{state}_with_geometry.csv')
+        dado = read_geodata(dicionario_arquivos[f'{j}_{state}_with_geometry'])
         i_moran = otimizar_k(dado, j, 1, 10, p_value=0.05)
         pesos = weights_matrix(dado, metric = 'knn', k = i_moran)
         st.pyplot(plot_lisa(dado, j, weights= pesos, k_opt=i_moran, estado=state))
