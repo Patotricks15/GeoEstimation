@@ -30,7 +30,7 @@ class GeoEstimation():
     self.final_date = final_date
 
     
-  def dataframe(self):
+  def dataframe(self, dicionario):
     '''
     Busca os dados espaciais do google Trends usando a lib googletrends
     '''
@@ -45,6 +45,7 @@ class GeoEstimation():
     #df_merged['geo_downloads_estimation'] = abs(round(df_merged[f'{self.app}_taxa'] * GeoEstimation(self.app, self.country, self.start_date, self.final_date).search_appid()['var_downloads'],0))
     df_merged['geometry'] = df_merged['geometry'].astype('str').apply(wkt.loads)
     gdf = gpd.GeoDataFrame(df_merged, crs='epsg:4326')
+    dicionario.update({f'{self.app}_{self.country}_with_geometry' : gdf})
     #gdf.to_csv(f'excel_results/{self.country}/{self.app}_{self.country}_with_geometry.csv')
     return gdf
     
@@ -144,7 +145,7 @@ class GeoEstimation():
 
 
 
-def social_dataframe(lista_apps, country, estado, start_date, final_date):
+def social_dataframe(lista_apps, country, estado, start_date, final_date, dicionario):
     '''
     Essa função executa o GeoEstimation().get_municip() e agrega os dados sobre PIB e população no arquivo ibge_municipios.xlsx.
     O retorno é um dataframe
@@ -161,10 +162,10 @@ def social_dataframe(lista_apps, country, estado, start_date, final_date):
 
 
     dado_lista = []
-    for file in os.listdir(f'excel_results/{country}'):
+    for file in list(dicionario.keys()):
         if estado in file:
             print(file)
-            dado_lista.append(pd.read_csv(f'excel_results/{country}/{file}'))
+            dado_lista.append(pd.read_csv(dicionario[file]))
 
 
     dado_agr = pd.concat(dado_lista)
