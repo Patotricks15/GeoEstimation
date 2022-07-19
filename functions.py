@@ -166,7 +166,7 @@ def social_dataframe(lista_apps, country, estado, start_date, final_date, dicion
     for file in list(dicionario.keys()):
         if estado in file:
             print(file)
-            dado_lista.append(pd.read_csv(dicionario[file]))
+            dado_lista.append(pd.DataFrame(dicionario[file]))
 
 
     dado_agr = pd.concat(dado_lista)
