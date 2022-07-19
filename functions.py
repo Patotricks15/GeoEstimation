@@ -159,7 +159,7 @@ def social_dataframe(lista_apps, country, estado, start_date, final_date, dicion
     - final_date: a data final
     '''
     for nome_app in lista_apps:
-        GeoEstimation(nome_app, country, start_date=start_date, final_date=final_date).get_municip(estado)
+        GeoEstimation(nome_app, country, start_date=start_date, final_date=final_date).get_municip(estado, dicionario)
 
 
     dado_lista = []
