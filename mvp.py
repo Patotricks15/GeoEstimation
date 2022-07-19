@@ -26,6 +26,7 @@ state_sigla = {'SP':'State of São Paulo',
 'ES':'State of Espírito Santo',
 }
 
+
 data_inicial = st.text_input('Data inicial: dia-mes-ano')
 data_final = st.text_input('Data final: dia-mes-ano')
 
