@@ -53,16 +53,16 @@ if st.button('Visualizar tabela (País)'):
     
 if st.button('Exibir mapa (País)'):
     for row, value in app_color_dict.iterrows():
-        st.pyplot(GeoEstimation(value['app'], pais, start_date=data_inicial, final_date=data_final).map(cor=value['cor']))
+        st.pyplot(GeoEstimation(value['app'], pais, start_date=data_inicial, final_date=data_final).map(cor=value['cor'], dicionario = dicionario_arquivos))
 
 
 
 if st.button('Visualizar tabela (Estado)'):
     st.text('visualizar')
-    #st.table(state_df[['name_muni', 'abbrev_state', 'populacao', 'pib', 'pib_per_capita','app', 'soma', 'max']+app])
+    st.table(state_df[['name_muni', 'abbrev_state', 'populacao', 'pib', 'pib_per_capita','app', 'soma', 'max']+app],dicionario=dicionario_arquivos)
 if st.button('Exibir mapa (Estado)'):
     for row, value in app_color_dict.iterrows():
-        st.pyplot(GeoEstimation(value['app'], 'BR', start_date=data_inicial, final_date=data_final).municip_map(state, cor = value['cor']))
+        st.pyplot(GeoEstimation(value['app'], 'BR', start_date=data_inicial, final_date=data_final).municip_map(state, cor = value['cor']), dicionario=dicionario_arquivos)
 if st.button('Estimativa socioeconômica'):
     df = state_df
     lista_app = app
