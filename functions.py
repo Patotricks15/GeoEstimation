@@ -49,11 +49,11 @@ class GeoEstimation():
     #gdf.to_csv(f'excel_results/{self.country}/{self.app}_{self.country}_with_geometry.csv')
     return gdf
     
-  def map(self, geoestimation_dataframe, cor): # novo parametro -> geoestimation_dataframe
+  def map(self, dicionario, cor): # novo parametro -> geoestimation_dataframe
     '''
     Plota o mapa dos estados pelo Índice Google Trends
     '''
-    dado = GeoEstimation(self.app, self.country, self.start_date, self.final_date).dataframe()
+    dado = GeoEstimation(self.app, self.country, self.start_date, self.final_date).dataframe(dicionario)
     #dado = geoestimation_dataframe
     plt.rcParams.update({"font.size": 5})
     fig, ax = plt.subplots(figsize=(4, 4), dpi=200)
