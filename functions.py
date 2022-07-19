@@ -139,7 +139,7 @@ class GeoEstimation():
         )
         ax.set_title(f"Pesquisas por {self.app} no Google ({self.start_date} : {self.final_date})")
         ax.axis("off")
-        plt.savefig(f'maps/{self.app}_map_{self.estado}.png')
+        #plt.savefig(f'maps/{self.app}_map_{self.estado}.png')
 
 
 
