@@ -75,7 +75,7 @@ class GeoEstimation():
     #plt.savefig(f'maps/{self.app}_{self.country}_map.png')
     
 
-  def get_municip(self, estado):
+  def get_municip(self, estado, dicionario):
         '''
         Essa função retorna os dados municipais dos Índices Google trends
         
