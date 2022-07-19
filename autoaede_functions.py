@@ -21,7 +21,7 @@ def read_geodata(dados):
     # estado = geobr.read_municipality(code_muni='RJ', year=2020)
     df = pd.DataFrame(dados)
     #df = gpd.GeoDataFrame(df, geometry='geometry')
-    df['geometry'] = df['geometry'].apply(wkt.loads)
+    df['geometry'] = df['geometry'].astype(str).apply(wkt.loads)
     gdf = gpd.GeoDataFrame(df, crs='epsg:4326')
 
 
