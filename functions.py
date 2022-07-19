@@ -45,7 +45,7 @@ class GeoEstimation():
     #df_merged['geo_downloads_estimation'] = abs(round(df_merged[f'{self.app}_taxa'] * GeoEstimation(self.app, self.country, self.start_date, self.final_date).search_appid()['var_downloads'],0))
     df_merged['geometry'] = df_merged['geometry'].astype('str').apply(wkt.loads)
     gdf = gpd.GeoDataFrame(df_merged, crs='epsg:4326')
-    gdf.to_csv(f'excel_results/{self.country}/{self.app}_{self.country}_with_geometry.csv')
+    #gdf.to_csv(f'excel_results/{self.country}/{self.app}_{self.country}_with_geometry.csv')
     return gdf
     
   def map(self, geoestimation_dataframe, cor): # novo parametro -> geoestimation_dataframe
@@ -71,7 +71,7 @@ class GeoEstimation():
     )
     ax.set_title(f'Pesqusas por "{self.app}" no Google ({self.start_date} : {self.final_date})')
     ax.axis("off")
-    plt.savefig(f'maps/{self.app}_{self.country}_map.png')
+    #plt.savefig(f'maps/{self.app}_{self.country}_map.png')
     
 
   def get_municip(self, estado):
@@ -105,7 +105,7 @@ class GeoEstimation():
         dado_estado = geobr.read_municipality(code_muni=self.estado, year=2020)
         dado = dado_estado.merge(df_final, how='left', on='name_muni').fillna(0)
         #df_final['geo_downloads_estimation'] = abs(round(df_muni[f'{self.app}_taxa'] * df_brasil[df_brasil['abbrev_state'] == self.estado]['geo_downloads_estimation'].values[0]))
-        dado.to_csv(f'excel_results/{self.country}/{self.app}_{self.estado}_with_geometry.csv')
+       # dado.to_csv(f'excel_results/{self.country}/{self.app}_{self.estado}_with_geometry.csv')
         return dado
     
   def municip_map(self, estado, cor): #novo parametro -> geoestimation_get_municip
