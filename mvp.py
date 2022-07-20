@@ -31,7 +31,7 @@ dicionario_arquivos = {}
 data_inicial = st.text_input('Data inicial: dia-mes-ano')
 data_final = st.text_input('Data final: dia-mes-ano')
 
-lista_cores = st.multiselect('Cores dos respectivos apps:', ['Greys', 'Purples', 'Blues', 'Greens', 'Oranges', 'Reds'])
+lista_cores = st.multiselect('Cores dos respectivos termos:', ['Greys', 'Purples', 'Blues', 'Greens', 'Oranges', 'Reds'])
 
 
 app_color_dict = pd.DataFrame({'app':app, 'cor':lista_cores})
