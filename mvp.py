@@ -14,7 +14,7 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 
 st.title('Geo Estimation - MVP')
 
-apps = st.text_input('apps')
+apps = st.text_input('Termos de busca (separados apenas por vírgula, sem espaço entre eles)')
 
 app = apps.split(',')
 pais = 'BR'
