@@ -110,7 +110,7 @@ class GeoEstimation():
         dicionario.update({f'{self.app}_{self.estado}_with_geometry' : dado})
         return dado
     
-  def municip_map(self.app, dado_estim, estado, dicionario): #novo parametro -> geoestimation_get_municip
+  def municip_map(self.app, estado, dicionario): #novo parametro -> geoestimation_get_municip
         '''
         Essa função retorna o mapa do município e do Índice Google Trends.
         
@@ -121,14 +121,15 @@ class GeoEstimation():
         self.estado = estado
         #dado_estado = geobr.read_municipality(code_muni=self.estado, year=2020)
         #dado_estim= GeoEstimation(self.app, self.country, self.start_date, self.final_date).get_municip(self.estado, dicionario)
-        dado_estim = dado_estim
+        dado_estim= GeoEstimation(self.app, self.country, self.start_date, self.final_date).get_municip(self.estado, dicionario)
+        #dado_estim = geoestimation_get_municip
         dado = gpd.GeoDataFrame(dado_estim, crs='epsg:4326')
         #dado = dado_estado.merge(dado_estim, how='left', on='name_muni').fillna(0)
         plt.rcParams.update({"font.size": 5})
         fig, ax = plt.subplots(figsize=(4, 4), dpi=200)
         fig = dado.plot(
             column=self.app,
-            cmap='Blues',
+            cmap=cor,
             legend=True,
             edgecolor='black',
             linewidth=0.2,
