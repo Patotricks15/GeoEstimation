@@ -45,6 +45,7 @@ df_potencial = {'app':[],
 
 geo = GeoEstimation(app, pais, start_date=data_inicial, final_date=data_final)
 state_df = social_dataframe(app, 'BR', estado=state, start_date=data_inicial, final_date=data_final, dicionario = dicionario_arquivos)
+geo_state = GeoEstimation(app, pais, start_date=data_inicial, final_date=data_final).get_municip(dicionario = dicionario_arquivos)
 #state_df = []
 
 
@@ -61,8 +62,8 @@ if st.button('Visualizar tabela (Estado)'):
     st.text('visualizar')
     st.table(state_df[['name_muni', 'abbrev_state', 'populacao', 'pib', 'pib_per_capita','app', 'soma', 'max']+app])
 if st.button('Exibir mapa (Estado)'):
-    for row, value in app_color_dict.iterrows():
-        st.pyplot(GeoEstimation(value['app'], 'BR', start_date=data_inicial, final_date=data_final).municip_map(state, cor = value['cor'], dicionario=dicionario_arquivos))
+    #for row, value in app_color_dict.iterrows():
+    st.pyplot(GeoEstimation(app, 'BR', start_date=data_inicial, final_date=data_final).municip_map(state, dado_estim=geo_state, dicionario=dicionario_arquivos))
 if st.button('Estimativa socioeconômica'):
     df = state_df
     lista_app = app
