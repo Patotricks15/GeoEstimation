@@ -110,7 +110,7 @@ class GeoEstimation():
         dicionario.update({f'{self.app}_{self.estado}_with_geometry' : dado})
         return dado
     
-  def municip_map(self.app, estado, dicionario): #novo parametro -> geoestimation_get_municip
+  def municip_map(self.app, estado, cor, dicionario): #novo parametro -> geoestimation_get_municip
         '''
         Essa função retorna o mapa do município e do Índice Google Trends.
         
