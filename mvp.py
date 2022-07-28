@@ -1,5 +1,5 @@
+from functions import GeoEstimation, social_dataframe, tendencia_mensal
 import streamlit as st
-from functions import GeoEstimation, social_dataframe
 import matplotlib.pyplot as plt
 import pandas as pd
 import geopandas as gpd
