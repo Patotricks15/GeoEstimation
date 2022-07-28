@@ -1,5 +1,5 @@
 import streamlit as st
-from functions import GeoEstimation, social_dataframe, tendencia_mensal
+from functions import GeoEstimation, social_dataframe
 import matplotlib.pyplot as plt
 import pandas as pd
 import geopandas as gpd
@@ -86,7 +86,7 @@ if st.button('Estimativa socioeconômica'):
 #input_estados_tendencia = st.text_input('Estados para comparar a tendência mensal')
 sigla_estado = state_sigla[state]
 select_estado = [sigla_estado]
-
+"""
 if st.button('tendencia'):
     adapt_cores = [i.lower()[:-1] for i in lista_cores]
     print(adapt_cores)
@@ -106,7 +106,7 @@ if st.button('tendencia'):
         plt.title(f'Evolução mensal {" X ".join(app)} em {sigla_estado}')
         plt.box(False)
     st.pyplot(fig)
-
+"""
 
 if st.button('Clusters'):
     for j in app:
