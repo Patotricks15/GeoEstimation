@@ -196,43 +196,43 @@ def social_dataframe(lista_apps, country, estado, start_date, final_date, dicion
 
 
 def tendencia_mensal(apps_lista, estados_lista, lista_cores):
-  df_lista_final3 = []
-  base = datetime(2020,1,1)
-  date_list = [base + relativedelta(months=x) for x in range(0,13,1)]
-  app_color_dict = pd.DataFrame({'app':apps_lista, 'cor':lista_cores})
-  for apps in apps_lista:
-    lista_df = []
-    for i,v in enumerate(date_list):
-      if v != date_list[-1]:
-        data_inicial = v.strftime('%d-%m-%Y')
-        data_final = date_list[i+1].strftime('%d-%m-%Y')
-        df = googletrends.spatio(apps, geo='BR', date_start=data_inicial,date_stop=data_final, method='')['BR']['df'].reset_index()
-        df['data'] = data_inicial
-        lista_df.append(df)
-    df_final = pd.concat(lista_df, axis=1)
+    df_lista_final3 = []
+    base = datetime(2020,1,1)
+    date_list = [base + relativedelta(months=x) for x in range(0,13,1)]
+    app_color_dict = pd.DataFrame({'app':apps_lista, 'cor':lista_cores})
+    for apps in apps_lista:
+      lista_df = []
+      for i,v in enumerate(date_list):
+        if v != date_list[-1]:
+          data_inicial = v.strftime('%d-%m-%Y')
+          data_final = date_list[i+1].strftime('%d-%m-%Y')
+          df = googletrends.spatio(apps, geo='BR', date_start=data_inicial,date_stop=data_final, method='')['BR']['df'].reset_index()
+          df['data'] = data_inicial
+          lista_df.append(df)
+      df_final = pd.concat(lista_df, axis=1)
 
-    lista_estados = df_final['geoName'].iloc[:,0].tolist()
-    df_final['estado'] = lista_estados
-    df_final.drop(columns='geoName', inplace=True)
+      lista_estados = df_final['geoName'].iloc[:,0].tolist()
+      df_final['estado'] = lista_estados
+      df_final.drop(columns='geoName', inplace=True)
 
-    lista_estados_selecionados = estados_lista
-    df_lista2 = []
-    for i in lista_estados_selecionados:
-      df_manip = df_final[df_final['estado'] == i].set_index('data')
-      df_lista2.append(df_manip)
-    df_final2 = pd.concat(df_lista2)
+      lista_estados_selecionados = estados_lista
+      df_lista2 = []
+      for i in lista_estados_selecionados:
+        df_manip = df_final[df_final['estado'] == i].set_index('data')
+        df_lista2.append(df_manip)
+      df_final2 = pd.concat(df_lista2)
 
-    #df_final2.index = ['nubank']
-    df_final2.columns = date_list
-    df_final3 = df_final2.T
-    df_final3 = df_final3.iloc[:-1,:]
-    #df_final3['nubank'] = df_final3['nubank'].astype(int)
-    df_final3.columns = lista_estados_selecionados
-    df_final3['app'] = apps
+      #df_final2.index = ['nubank']
+      df_final2.columns = date_list
+      df_final3 = df_final2.T
+      df_final3 = df_final3.iloc[:-1,:]
+      #df_final3['nubank'] = df_final3['nubank'].astype(int)
+      df_final3.columns = lista_estados_selecionados
+      df_final3['app'] = apps
 
-    df_lista_final3.append(df_final3)
-  df_final4 = pd.concat(df_lista_final3)
-  return df_final4
+      df_lista_final3.append(df_final3)
+    df_final4 = pd.concat(df_lista_final3)
+    return df_final4
 
 
 '''
