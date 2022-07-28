@@ -1,12 +1,276 @@
-from functions import GeoEstimation, social_dataframe, tendencia_mensal
-import streamlit as st
-import matplotlib.pyplot as plt
 import pandas as pd
-import geopandas as gpd
-from shapely import wkt
-from shapely.errors import ShapelyDeprecationWarning
 import numpy as np
+import geobr
+import matplotlib.pyplot as plt
+from unidecode import unidecode
+import googletrends as googletrends
+from shapely import wkt
+import warnings
+from shapely.errors import ShapelyDeprecationWarning
+#from etl_functions import find_mongo
+from datetime import datetime
+#from pymongo import MongoClient
+import requests
+from bs4 import BeautifulSoup
+from pytrends.request import TrendReq
+from pytrendAddons import interest_by_city
+import geopandas as gpd
+import re
+import os
+from dateutil.relativedelta import relativedelta
+from dateutil.rrule import rrule, MONTHLY
+import time
+import streamlit as st
 from autoaede_functions import plot_lisa, otimizar_k, weights_matrix, read_geodata, significant_HH
+
+warnings.filterwarnings("ignore")
+
+
+
+
+class GeoEstimation():
+  def __init__(self, app, country, start_date, final_date):
+    self.app = app
+    self.country = country
+    self.start_date = start_date
+    self.final_date = final_date
+    
+  def dataframe(self, dicionario):
+    '''
+    Busca os dados espaciais do google Trends usando a lib googletrends
+    '''
+    df = googletrends.spatio(self.app, geo=[self.country], date_start=self.start_date,date_stop=self.final_date, method='')[self.country]['df'].reset_index()
+    #pytrends = TrendReq(hl='pt-BR')
+    #df = pytrends.build_payload(self.app, timeframe=f'{datetime.strptime(self.start_date, "%Y-%m-%d")} {datetime.strptime(self.final_date, "%Y-%m-%d")}', geo='BR')
+    df['name_state'] = df['geoName'].apply(lambda x: x.split('State of ')[1].title() if 'State' in x else x)
+    df['name_state'] = df['name_state'].apply(lambda x: 'Distrito Federal' if x == 'Federal District' else x)
+    df_estados = geobr.read_state(year=2020)
+    df_estados['name_state'] = df_estados['name_state'].apply(lambda x: unidecode(x))
+    df['name_state'] = df['name_state'].apply(lambda x: unidecode(x))
+    df_merged = df_estados.merge(df.drop(columns='geoName'), how='left', on='name_state').fillna(0)
+    #df_merged[f'{self.app}_taxa'] = df_merged[self.app] / df_merged[self.app].sum()
+    #df_merged['geo_downloads_estimation'] = abs(round(df_merged[f'{self.app}_taxa'] * GeoEstimation(self.app, self.country, self.start_date, self.final_date).search_appid()['var_downloads'],0))
+    df_merged['geometry'] = df_merged['geometry'].astype('str').apply(wkt.loads)
+    gdf = gpd.GeoDataFrame(df_merged, crs='epsg:4326')
+    dicionario.update({f'{self.app}_{self.country}_with_geometry' : gdf})
+    #gdf.to_csv(f'excel_results/{self.country}/{self.app}_{self.country}_with_geometry.csv')
+    return gdf
+    
+  def map(self, dicionario, cor): # novo parametro -> geoestimation_dataframe
+    '''
+    Plota o mapa dos estados pelo Índice Google Trends
+    '''
+    dado = GeoEstimation(self.app, self.country, self.start_date, self.final_date).dataframe(dicionario)
+    #dado = geoestimation_dataframe
+    plt.rcParams.update({"font.size": 5})
+    fig, ax = plt.subplots(figsize=(4, 4), dpi=200)
+    fig = dado.plot(
+        column=self.app,
+        cmap=cor,
+        legend=True,
+        edgecolor='black',
+        linewidth=0.2,
+        legend_kwds={
+            "label": "Google Trend Index",
+            "orientation": "horizontal",
+            "shrink": 0.6,
+        },
+        ax=ax,
+    )
+    ax.set_title(f'Pesqusas por "{self.app}" no Google ({self.start_date} : {self.final_date})')
+    ax.axis("off")
+    #plt.savefig(f'maps/{self.app}_{self.country}_map.png')
+    
+
+  def get_municip(self, estado, dicionario):
+        '''
+        Essa função retorna os dados municipais dos Índices Google trends
+        
+        * Parâmetros:
+        - estado: estado
+        
+        '''
+        self.estado = estado
+        inicio = datetime.strptime(self.start_date, '%d-%m-%Y').strftime('%Y-%m-%d')
+        final = datetime.strptime(self.final_date, '%d-%m-%Y').strftime('%Y-%m-%d')
+        #df_brasil = GeoEstimation(self.app, self.country, start_date=self.start_date, final_date=self.final_date).dataframe()
+        pytrends = TrendReq(hl='pt-BR')
+        pytrends.build_payload([self.app], timeframe=f'{inicio} {final}', geo=f'BR-{self.estado}')
+        df_muni = interest_by_city(pytrends, inc_low_vol=True).sort_values(self.app, ascending=False)
+        df_muni = df_muni[df_muni[self.app] >=1]
+        #df_muni[f'{self.app}_taxa'] = df_muni[self.app] / df_muni[self.app].sum()
+        
+        df_muni = df_muni.reset_index()
+        
+        #df_estado = df_brasil[df_brasil['abbrev_state'] == self.estado].reset_index()
+        #print(df_brasil[df_brasil['abbrev_state'] == self.estado]['geo_rating_estimation'].values[0])
+        
+        df_final = pd.DataFrame()
+        df_final['name_muni'] = df_muni['geoName'].str.title()
+        df_final[self.app] = df_muni[self.app]
+        dado_estado = geobr.read_municipality(code_muni=self.estado, year=2020)
+        dado = dado_estado.merge(df_final, how='left', on='name_muni').fillna(0)
+        #df_final['geo_downloads_estimation'] = abs(round(df_muni[f'{self.app}_taxa'] * df_brasil[df_brasil['abbrev_state'] == self.estado]['geo_downloads_estimation'].values[0]))
+        #dado.to_csv(f'excel_results/{self.country}/{self.app}_{self.estado}_with_geometry.csv')
+        dicionario.update({f'{self.app}_{self.estado}_with_geometry' : dado})
+        return dado
+    
+  def municip_map(self, estado, cor, dicionario): #novo parametro -> geoestimation_get_municip
+        '''
+        Essa função retorna o mapa do município e do Índice Google Trends.
+        
+        * Parâmetros:
+        - estado: estado
+        - cor: cor
+        '''
+        self.estado = estado
+        #dado_estado = geobr.read_municipality(code_muni=self.estado, year=2020)
+        dado_estim= GeoEstimation(self.app, self.country, self.start_date, self.final_date).get_municip(self.estado, dicionario)
+        #dado_estim = geoestimation_get_municip
+        dado = gpd.GeoDataFrame(dado_estim, crs='epsg:4326')
+        #dado = dado_estado.merge(dado_estim, how='left', on='name_muni').fillna(0)
+        plt.rcParams.update({"font.size": 5})
+        fig, ax = plt.subplots(figsize=(4, 4), dpi=200)
+        fig = dado.plot(
+            column=self.app,
+            cmap=cor,
+            legend=True,
+            edgecolor='black',
+            linewidth=0.2,
+            legend_kwds={
+                "label": "Google Trend Index",
+                "orientation": "horizontal",
+                "shrink": 0.6,
+            },
+            ax=ax,
+        )
+        ax.set_title(f"Pesquisas por {self.app} no Google ({self.start_date} : {self.final_date})")
+        ax.axis("off")
+        #plt.savefig(f'maps/{self.app}_map_{self.estado}.png')
+
+
+
+
+def social_dataframe(lista_apps, country, estado, start_date, final_date, dicionario):
+    '''
+    Essa função executa o GeoEstimation().get_municip() e agrega os dados sobre PIB e população no arquivo ibge_municipios.xlsx.
+    O retorno é um dataframe
+    
+    * Parâmetros:
+    - lista_apps: a lista de aplicativos a serem analisados
+    - country: a sigla do país
+    - estado: a sigla do estado brasileiro
+    - start_date: a data de início
+    - final_date: a data final
+    '''
+    for nome_app in lista_apps:
+        GeoEstimation(nome_app, country, start_date=start_date, final_date=final_date).get_municip(estado, dicionario)
+
+
+    dado_lista = []
+    for file in list(dicionario.keys()):
+        if estado in file:
+            print(file)
+            dado_lista.append(pd.DataFrame(dicionario[file]))
+
+
+    dado_agr = pd.concat(dado_lista)
+    dado_agr['name_muni'] = dado_agr['name_muni'].str.title()
+    dado_ibge = pd.read_excel('ibge_municipios_final.xlsx', engine='openpyxl')
+    #dado_ibge['name_muni'] = dado_ibge['name_muni'].apply(lambda x: str(x).title())
+    dado = dado_agr.merge(dado_ibge, how='left', on='name_muni')
+    dado.to_csv('agregado.csv')
+    dado['geometry'] = dado['geometry'].astype('str').apply(wkt.loads) #Transformando a coluna geometry no tipo geometry
+    dado = gpd.GeoDataFrame(dado, crs='epsg:4326') #Transformando o dataframe num geodataframe
+    dado_filtrado = dado.groupby('name_muni').max().reset_index().iloc[:,:][lista_apps] #Criando um dataframe só com os apps como coluna
+    dados_economicos = dado.groupby('name_muni').max().reset_index().iloc[:, -4:]
+    print(dados_economicos.columns)
+    dado_filtrado['app'] = dado_filtrado.idxmax(axis=1) #Pegando os nomes de coluna com maior valor e colocando numa nova coluna
+    dado_filtrado.fillna(0, inplace=True) #Trocando nulo por 0
+    #dado = dado.iloc[:len(dado_filtrado)] #Filtrando o dataframe
+    dado_somado = pd.concat([dado.drop(columns=lista_apps), dado_filtrado], axis=1) #Juntando os dois dataframes
+    dado_somado['soma'] = dado_somado[lista_apps].sum(axis=1) #Somando os valores
+    dado_somado['app'] = np.where(dado_somado['soma'] == 0, 'Nenhum', dado_somado['app']) #Tirando os que repetiram erroneamente na coluna app
+    dado_somado['max'] = dado_somado[lista_apps].max(axis=1) #Pegando o valor máximo
+    #dado_somado = dado_somado.dropna(subset=['max']) #Excluir o nulo da coluna max
+
+    dado_final = pd.concat([dado_somado, dados_economicos], axis=1).drop_duplicates(subset='code_muni').iloc[:,:-3].fillna(0)
+    dado_final['geometry'] = dado_final['geometry'].astype(str)
+    dado_final.to_excel('dado_final.xlsx')
+    return dado_final
+
+
+def tendencia_mensal(apps_lista, estados_lista, lista_cores):
+  df_lista_final3 = []
+  base = datetime(2020,1,1)
+  date_list = [base + relativedelta(months=x) for x in range(0,13,1)]
+  app_color_dict = pd.DataFrame({'app':apps_lista, 'cor':lista_cores})
+  for apps in apps_lista:
+    lista_df = []
+    for i,v in enumerate(date_list):
+      if v != date_list[-1]:
+        data_inicial = v.strftime('%d-%m-%Y')
+        data_final = date_list[i+1].strftime('%d-%m-%Y')
+        df = googletrends.spatio(apps, geo='BR', date_start=data_inicial,date_stop=data_final, method='')['BR']['df'].reset_index()
+        df['data'] = data_inicial
+        lista_df.append(df)
+    df_final = pd.concat(lista_df, axis=1)
+
+    print(df_final.columns)
+    lista_estados = df_final['geoName'].iloc[:,0].tolist()
+    df_final['estado'] = lista_estados
+    df_final.drop(columns='geoName', inplace=True)
+
+    lista_estados_selecionados = estados_lista
+    df_lista2 = []
+    for i in lista_estados_selecionados:
+      df_manip = df_final[df_final['estado'] == i].set_index('data')
+      df_lista2.append(df_manip)
+    df_final2 = pd.concat(df_lista2)
+
+    #df_final2.index = ['nubank']
+    df_final2.columns = date_list
+    df_final3 = df_final2.T
+    df_final3 = df_final3.iloc[:-1,:]
+    #df_final3['nubank'] = df_final3['nubank'].astype(int)
+    df_final3.columns = lista_estados_selecionados
+    df_final3['app'] = apps
+
+    df_lista_final3.append(df_final3)
+  df_final4 = pd.concat(df_lista_final3)
+  return df_final4
+  
+
+def tendencia_mensal2(apps_lista, state, lista_cores):
+  df_lista = []
+  base = datetime(2020,1,1)
+  date_list = date_list = [base + relativedelta(months=x) for x in range(0,13,1)]
+  pytrends = TrendReq(hl='pt-BR')
+  for i,v in enumerate(date_list):
+    if v != date_list[-1]:
+      data_inicial = v.strftime('%Y-%m-%d')
+      data_final = date_list[i+1].strftime('%Y-%m-%d')
+      pytrends.build_payload(apps_lista, timeframe=f'{data_inicial} {data_final}', geo=f'BR')
+      df = pytrends.interest_by_region(resolution='COUNTRY', inc_low_vol=True, inc_geo_code=True)
+      df['data'] = data_inicial
+      df_lista.append(df)
+  df_final = pd.concat(df_lista).reset_index()
+  lista_estados = list(df_final['geoName'])
+  df_final['estado'] = lista_estados
+  df_final.drop(columns='geoName', inplace=True)
+
+  lista_estados_selecionados = [state]
+  df_lista2 = []
+  for i in lista_estados_selecionados:
+    df_manip = df_final[df_final['geoCode'] == f'BR-{i}'].set_index('data')
+    df_lista2.append(df_manip)
+  df_final2 = pd.concat(df_lista2)
+  return df_final2
+
+
+
+
+#############################################################################
 
 
 st.set_option('deprecation.showPyplotGlobalUse', False)
@@ -14,7 +278,7 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 
 st.title('Geo Estimation - MVP')
 
-apps = st.text_input('Termos de busca (separados apenas por vírgula, sem espaço entre eles)')
+apps = st.text_input('apps')
 
 app = apps.split(',')
 pais = 'BR'
@@ -31,16 +295,16 @@ dicionario_arquivos = {}
 data_inicial = st.text_input('Data inicial: dia-mes-ano')
 data_final = st.text_input('Data final: dia-mes-ano')
 
-lista_cores = st.multiselect('Cores dos respectivos termos:', ['Greys', 'Purples', 'Blues', 'Greens', 'Oranges', 'Reds'])
+lista_cores = st.multiselect('Cores dos respectivos apps:', ['Greys', 'Purples', 'Blues', 'Greens', 'Oranges', 'Reds'])
 
 
 app_color_dict = pd.DataFrame({'app':app, 'cor':lista_cores})
 df_potencial = {'app':[],
 'n_cidades':[],
-'pib_potencial_total':[],
-'pib_potencial_medio':[],
-'demanda_potencial_total':[],
-'demanda_potencial_media':[]}
+'PIB_potencial':[],
+'demanda_potencial':[],
+'idh_medio':[],
+'gini_medio':[]}
 
 
 geo = GeoEstimation(app, pais, start_date=data_inicial, final_date=data_final)
@@ -59,45 +323,55 @@ if st.button('Exibir mapa (País)'):
 
 if st.button('Visualizar tabela (Estado)'):
     st.text('visualizar')
-    st.table(state_df[['name_muni', 'abbrev_state', 'populacao', 'pib', 'pib_per_capita','app', 'soma', 'max']+app])
+    st.text(state_df.columns)
+    #st.table(state_df[['name_muni', 'abbrev_state', 'populacao', 'pib', 'idh', 'pib_per_capita','app', 'soma', 'max']+app])
 if st.button('Exibir mapa (Estado)'):
     for row, value in app_color_dict.iterrows():
+        st.text(value['app'])
         st.pyplot(GeoEstimation(value['app'], 'BR', start_date=data_inicial, final_date=data_final).municip_map(state, cor = value['cor'], dicionario=dicionario_arquivos))
 if st.button('Estimativa socioeconômica'):
     df = state_df
     lista_app = app
-    df_pib_pot = df[app+['pib_per_capita', 'populacao']]
+    df_pib_pot = df[app+['pib','pib_per_capita', 'populacao','IDH','gini']]
     for i in lista_app:
       df_pib_pot[f'taxa_{i}'] = (df_pib_pot[i] / df_pib_pot[lista_app].sum(axis=1)) * (df_pib_pot[i] /100)
     df_pib_pot = df_pib_pot.dropna(0)
     for i in lista_app:
-      df_pib_pot[f'pib_potencial_{i}'] = df_pib_pot['pib_per_capita'] * df_pib_pot[f'taxa_{i}']
-      df_pib_pot[f'demanda_potencial_{i}'] = round(df_pib_pot['populacao'] * df_pib_pot[f'taxa_{i}'], 0)
+      print(df_pib_pot.columns)
+      df_pib_pot[f'taxa_pib_{i}'] = df_pib_pot['pib'] * df_pib_pot[f'taxa_{i}']
+      #df_pib_pot[f'taxa_pib_per_capita_{i}'] = df_pib_pot['pib_per_capita'] * df_pib_pot[f'taxa_{i}']
+      df_pib_pot[f'taxa_demanda_{i}'] = round(df_pib_pot['populacao'] * df_pib_pot[f'taxa_{i}'], 0)
+      df_pib_pot[f'taxa_idh_{i}'] = df_pib_pot[df_pib_pot[i] > 0]['IDH']
+      df_pib_pot[f'taxa_gini_{i}'] = df_pib_pot[df_pib_pot[i] > 0]['gini']
+      
 
     for i in lista_app:
       df_potencial['app'].append(i)
       df_potencial['n_cidades'].append(len(df_pib_pot[df_pib_pot[i] > 0]))
-      df_potencial['pib_potencial_total'].append(round(df_pib_pot[f'pib_potencial_{i}'].sum(),0))
-      df_potencial['pib_potencial_medio'].append(round(df_pib_pot[f'pib_potencial_{i}'].mean(),0))
-      df_potencial['demanda_potencial_total'].append(round(df_pib_pot[f'demanda_potencial_{i}'].sum(),0))
-      df_potencial['demanda_potencial_media'].append(round(df_pib_pot[f'demanda_potencial_{i}'].mean(),0))
+      df_potencial['PIB_potencial'].append(round(df_pib_pot[f'taxa_pib_{i}'].sum(),0))
+      #df_potencial['PIB per capita_medio'].append(round(df_pib_pot[f'pib_potencial_{i}'].mean(),0))
+      df_potencial['demanda_potencial'].append(round(df_pib_pot[f'taxa_demanda_{i}'].sum(),0))
+      df_potencial['idh_medio'].append(df_pib_pot[f'taxa_idh_{i}'].mean())
+      df_potencial['gini_medio'].append(df_pib_pot[f'taxa_gini_{i}'].mean())
     st.table(df_potencial)
 
 #input_estados_tendencia = st.text_input('Estados para comparar a tendência mensal')
 sigla_estado = state_sigla[state]
 select_estado = [sigla_estado]
-"""
+
 if st.button('tendencia'):
     adapt_cores = [i.lower()[:-1] for i in lista_cores]
     print(adapt_cores)
     app_color_dict['cor'] = adapt_cores
-    retorno_df = tendencia_mensal(app, select_estado, adapt_cores)
+    retorno_df = tendencia_mensal2(app, select_estado, adapt_cores)
     estados_lista= [select_estado]
     for select_estado in estados_lista:
       estado = select_estado
       fig, ax =plt.subplots(1,1)
       for row, value in app_color_dict.iterrows():
-        retorno_df[retorno_df['app'] == value['app']][[sigla_estado,'app']].plot(ax=ax, label=value['app'], color=value['cor'])
+        #retorno_df[retorno_df['app'] == value['app']][[sigla_estado,'app']].plot(ax=ax, label=value['app'], color=value['cor'])
+        retorno_df[app].plot(ax=ax, label=value['app'], color=value['cor']) # as linhas não aparecem
+        
         #df_final4[df_final4['app'] == 'picpay'][[estado,'app']].plot(ax=ax, label='picpay',color='green')
         #df_final4[df_final4['app'] == 'c6 bank'][[estado,'app']].plot(ax=ax, label='c6 bank', color='black')
         #df_final4[df_final4['app'] == 'banco inter'][[estado,'app']].plot(ax=ax, label='banco inter',color='orange')
@@ -106,7 +380,8 @@ if st.button('tendencia'):
         plt.title(f'Evolução mensal {" X ".join(app)} em {sigla_estado}')
         plt.box(False)
     st.pyplot(fig)
-"""
+
+
 
 if st.button('Clusters'):
     for j in app:
@@ -115,11 +390,3 @@ if st.button('Clusters'):
         pesos = weights_matrix(dado, metric = 'knn', k = i_moran)
         st.pyplot(plot_lisa(dado, j, weights= pesos, k_opt=i_moran, estado=state))
         st.text(significant_HH(dado, j, weight= pesos))
-
-#if st.button('Análise de dominância'):
- #   state_df['geometry'] = state_df['geometry'].apply(wkt.loads)
-  #  state_df = gpd.GeoDataFrame(state_df, crs='epsg:4326')
-   # app_color = pd.DataFrame({'app':app,
-    #         'cor':lista_cores})
-    #for i in app:
-     #   st.pyplot(GeoEstimation(i, 'BR', start_date='01-01-2021', final_date='01-01-2022').dominance(app = app, estado = state, app_color_dict=app_color, state_df=state_df))
