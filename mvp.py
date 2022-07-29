@@ -365,22 +365,26 @@ if st.button('tendencia'):
     app_color_dict['cor'] = adapt_cores
     retorno_df = tendencia_mensal2(app, select_estado, adapt_cores)
     estados_lista= [select_estado]
-    for select_estado in estados_lista:
-      estado = select_estado
-      fig, ax =plt.subplots(1,1)
-      for row, value in app_color_dict.iterrows():
+    estado = state
+    fig, ax =plt.subplots(1,1)
+    retorno_df[app_color_dict['app']].plot(ax=ax,label=app_color_dict['app'], color=[i[:-1] if i[-1] == 's' else i for i in app_color_dict['cor']])
+    #for row, value in app_color_dict.iterrows():
         #retorno_df[retorno_df['app'] == value['app']][[sigla_estado,'app']].plot(ax=ax, label=value['app'], color=value['cor'])
-        retorno_df[app].plot(ax=ax, label=value['app'], color=value['cor']) # as linhas não aparecem
+        #retorno_df[app].plot(ax=ax, label=value['app'], color=value['cor']) # as linhas não aparecem
         
         #df_final4[df_final4['app'] == 'picpay'][[estado,'app']].plot(ax=ax, label='picpay',color='green')
         #df_final4[df_final4['app'] == 'c6 bank'][[estado,'app']].plot(ax=ax, label='c6 bank', color='black')
         #df_final4[df_final4['app'] == 'banco inter'][[estado,'app']].plot(ax=ax, label='banco inter',color='orange')
-        ax.legend(app)
-        plt.ylim(0,100)
-        plt.title(f'Evolução mensal {" X ".join(app)} em {sigla_estado}')
-        plt.box(False)
+    ax.legend(app)
+    plt.ylim(0,100)
+    plt.title(f'Evolução mensal {" X ".join(app)} em {sigla_estado}')
+    plt.box(False)
     st.pyplot(fig)
-
+    fig2, ax2 =plt.subplots(1,1)    
+    brasil_df = tendencia_brasil(app, state, data_inicial=data_inicial, data_final=data_final)
+    brasil_df[app_color_dict['app']].plot(ax=ax2,label=app_color_dict['app'], color=[i[:-1] if i[-1] == 's' else i for i in app_color_dict['cor']])
+    plt.title(f'Evolução mensal {" X ".join(app)} no Brasil {data_inicial.split("-")[2]}')
+    st.pyplot(fig2)
 
 
 if st.button('Clusters'):
