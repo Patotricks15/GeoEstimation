@@ -233,7 +233,15 @@ def tendencia_mensal(apps_lista, estados_lista, lista_cores):
       df_lista_final3.append(df_final3)
     df_final4 = pd.concat(df_lista_final3)
     return df_final4
+  
+  
+def tendencia_brasil(apps_lista, state, data_inicial, data_final):
 
+    pytrends = TrendReq(hl='pt-BR')
+    pytrends.build_payload(apps_lista, timeframe=f'2020-01-01 2021-01-01', geo=f'BR')
+    #{data_inicial.split("-")[2]}-{data_inicial.split("-")[1]}-{data_inicial.split("-")[0]} {data_final.split("-")[2]}-{data_final.split("-")[1]}-{data_final.split("-")[0]}
+    df = pytrends.interest_over_time().drop(columns='isPartial')
+    return df
 
 '''
 def social_dataframe_country(lista_apps, country, start_date, final_date):
