@@ -368,7 +368,7 @@ if st.button('tendencia'):
     adapt_cores = [i.lower()[:-1] for i in lista_cores]
     print(adapt_cores)
     app_color_dict['cor'] = adapt_cores
-    retorno_df = tendencia_mensal2(app, select_estado, adapt_cores)
+    retorno_df = tendencia_mensal(app, select_estado, adapt_cores)
     estados_lista= [select_estado]
     estado = state
     fig, ax =plt.subplots(1,1)
