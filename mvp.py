@@ -369,6 +369,7 @@ if st.button('tendencia'):
     print(adapt_cores)
     app_color_dict['cor'] = adapt_cores
     retorno_df = tendencia_mensal(app, select_estado, adapt_cores)
+    st.text(retorno_df.columns)
     estados_lista= [select_estado]
     estado = state
     fig, ax =plt.subplots(1,1)
