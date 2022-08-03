@@ -288,7 +288,7 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 
 
 st.title('GeoLocation - MVP')
-st.markdown("![Alt Text](https://github.com/Patotricks15/GeoEstimation/blob/main/GeoLocation.png)")
+st.image("GeoLocation.png")
 st.write('''Objetivo desse MVP: validar a ideia de estimar e analisar a geolocalização das buscas por apps e keywords.
          As buscas são baseadas no Google Trends, onde os termos recebem 100 para o local e data onde mais foram pesquisados, e 0 onde não houve volume relevante de busca''')
 apps = st.text_input('Termos de busca: app1,app2,keyword1,keyword2')
