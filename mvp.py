@@ -349,7 +349,7 @@ if st.button('Exibir tabela (Estado)'):
     try:
       st.dataframe(geo_state_dataframe)
     except:
-      st.table(geo_state_dataframe)
+      st.write(geo_state_dataframe)
 if st.button('Exibir mapa (Estado)'):
     for row, value in app_color_dict.iterrows():
         st.text(value['app'])
