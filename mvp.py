@@ -288,8 +288,9 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 
 
 st.title('Geo Estimation - MVP')
-
-apps = st.text_input('apps')
+st.write('''Objetivo desse MVP: validar a ideia de estimar e analisar a geolocalização das buscas por apps e keywords.
+         As buscas são baseadas no Google Trends, onde os termos recebem 100 para o local e data onde mais foram pesquisados, e 0 onde não houve volume relevante de busca''')
+apps = st.text_input('Termos de busca: app1,app2,keyword1,keyword2')
 
 app = apps.split(',')
 pais = 'BR'
@@ -310,7 +311,7 @@ state_sigla = {'SP':'State of São Paulo',
 data_inicial = st.text_input('Data inicial: dia-mes-ano')
 data_final = st.text_input('Data final: dia-mes-ano')
 
-lista_cores = st.multiselect('Cores dos respectivos apps:', ['Greys', 'Purples', 'Blues', 'Greens', 'Oranges', 'Reds'])
+lista_cores = st.multiselect('Cores dos respectivos termos de busca:', ['Greys', 'Purples', 'Blues', 'Greens', 'Oranges', 'Reds'])
 
 
 app_color_dict = pd.DataFrame({'app':app, 'cor':lista_cores})
