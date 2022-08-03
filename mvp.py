@@ -344,8 +344,8 @@ if st.button('Exibir mapa (país)'):
 st.markdown('## Análise no Estado')
 if st.button('Exibir tabela (Estado)'):
     #st.text('visualizar')
-    #st.text(state_df.columns)
-    geo_state_dataframe = state_df[['name_muni', 'abbrev_state', 'populacao', 'pib', 'IDH', 'pib_per_capita','app', 'soma', 'max']+app]
+    #st.text(state_df.columns)[['name_muni', 'abbrev_state', 'populacao', 'pib', 'IDH', 'pib_per_capita','app', 'soma', 'max']+app]
+    geo_state_dataframe = state_df
     try:
       st.dataframe(geo_state_dataframe)
     except:
@@ -380,7 +380,7 @@ if st.button('Estimativa socioeconômica'):
       df_potencial['PIB_per_capita_medio'].append(round(df_pib_pot[f'pib_per_capita_medio_{i}'].mean(),2))
       df_potencial['idh_medio'].append(df_pib_pot[f'taxa_idh_{i}'].mean())
       df_potencial['gini_medio'].append(df_pib_pot[f'taxa_gini_{i}'].mean())
-    st.table(df_potencial)
+    st.dataframe(df_potencial)
 
 #input_estados_tendencia = st.text_input('Estados para comparar a tendência mensal')
 sigla_estado = state_sigla[state]
