@@ -79,7 +79,6 @@ class GeoEstimation():
         ax=ax,
     )
     ax.set_title(f'Pesqusas por "{self.app}" no Google ({self.start_date} : {self.final_date})', fontsize=15)
-    plt.suptitle('sub')
     ax.axis("off")
     #plt.savefig(f'maps/{self.app}_{self.country}_map.png')
     
@@ -146,7 +145,7 @@ class GeoEstimation():
             },
             ax=ax,
         )
-        plt.suptitle(f"Pesquisas por {self.app} no Google\n{estado}, {self.start_date} ~ {self.final_date}", fontsize=15)
+        plt.title(f"Pesquisas por {self.app} no Google\n{estado}, {self.start_date} ~ {self.final_date}", fontsize=15)
         #plt.title(f'{estado}, {self.start_date} ~ {self.final_date}', fontsize=8)
         ax.axis("off")
         #plt.savefig(f'maps/{self.app}_map_{self.estado}.png')
