@@ -347,9 +347,9 @@ if st.button('Exibir tabela (Estado)'):
     #st.text(state_df.columns)[['name_muni', 'abbrev_state', 'populacao', 'pib', 'IDH', 'pib_per_capita','app', 'soma', 'max']+app]
     geo_state_dataframe = state_df
     try:
-      st.dataframe(geo_state_dataframe)
+      st.dataframe(geo_state_dataframe[['name_muni', 'abbrev_state', 'populacao', 'pib', 'IDH', 'pib_per_capita','app', 'soma', 'max']+app])
     except:
-      st.write(geo_state_dataframe)
+      st.write(geo_state_dataframe[['name_muni', 'abbrev_state', 'populacao', 'pib', 'IDH', 'pib_per_capita','app', 'soma', 'max']+app])
 if st.button('Exibir mapa (Estado)'):
     for row, value in app_color_dict.iterrows():
         st.text(value['app'])
