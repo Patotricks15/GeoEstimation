@@ -429,7 +429,7 @@ if botao_tendencia:
 
 #variavel_socio = st.selectbox('Escolha uma variável para correlacionar com os termos de busca')
 
-st.markdown('## Análises de clusters espaciais')
+st.markdown('## Análise de clusters espaciais')
 
 if st.button('Clusters univariados'):
     st.text('''
