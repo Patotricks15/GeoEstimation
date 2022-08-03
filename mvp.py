@@ -299,6 +299,10 @@ state_sigla = {'SP':'State of São Paulo',
 'RJ':'State of Rio de Janeiro',
 'MG':'State of Minas Gerais',
 'ES':'State of Espírito Santo',
+'AC':'State of Acre',
+'AL':'State of Alagoas',
+'AP':'State of Amapá',
+'AM':'State of Amazonas',
 }
 
 
@@ -314,7 +318,7 @@ df_potencial = {'app':[],
 'n_cidades':[],
 'PIB_potencial':[],
 'demanda_potencial':[],
-'PIB_per_capita_potencial':[],
+'|':[],
 'PIB_per_capita_medio':[],
 'idh_medio':[],
 'gini_medio':[]}
