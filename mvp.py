@@ -345,7 +345,7 @@ st.markdown('## Análise no Estado')
 if st.button('Exibir tabela (Estado)'):
     #st.text('visualizar')
     #st.text(state_df.columns)[['name_muni', 'abbrev_state', 'populacao', 'pib', 'IDH', 'pib_per_capita','app', 'soma', 'max']+app]
-    geo_state_dataframe = pd.DataFrame(state_df[['name_muni', 'abbrev_state', 'populacao', 'pib', 'IDH', 'pib_per_capita','app', 'soma', 'max']+app]).astype(str)
+    geo_state_dataframe = pd.DataFrame(state_df.drop(columns='geometry')[['name_muni', 'abbrev_state', 'populacao', 'pib', 'IDH', 'pib_per_capita','app', 'soma', 'max']+app]).astype(str)
     try:
       st.dataframe(geo_state_dataframe)
     except:
