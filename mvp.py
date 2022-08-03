@@ -374,6 +374,7 @@ if st.button('Estimativa socioeconômica'):
       df_potencial['n_cidades'].append(len(df_pib_pot[df_pib_pot[i] > 0]))
       df_potencial['PIB_potencial'].append(round(df_pib_pot[f'taxa_pib_{i}'].sum(),2))
       df_potencial['demanda_potencial'].append(round(df_pib_pot[f'taxa_demanda_{i}'].sum(),0))
+      df_potencial['|'].append('|')
       df_potencial['PIB_per_capita_medio'].append(round(df_pib_pot[f'pib_per_capita_medio_{i}'].mean(),2))
       df_potencial['idh_medio'].append(df_pib_pot[f'taxa_idh_{i}'].mean())
       df_potencial['gini_medio'].append(df_pib_pot[f'taxa_gini_{i}'].mean())
