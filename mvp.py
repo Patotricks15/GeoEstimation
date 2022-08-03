@@ -181,12 +181,11 @@ def social_dataframe(lista_apps, country, estado, start_date, final_date, dicion
     dado_ibge = pd.read_excel('ibge_municipios_final.xlsx', engine='openpyxl')
     #dado_ibge['name_muni'] = dado_ibge['name_muni'].apply(lambda x: str(x).title())
     dado = dado_agr.merge(dado_ibge, how='left', on='name_muni')
-    dado.to_csv('agregado.csv')
+    #dado.to_csv('agregado.csv')
     dado['geometry'] = dado['geometry'].astype('str').apply(wkt.loads) #Transformando a coluna geometry no tipo geometry
     dado = gpd.GeoDataFrame(dado, crs='epsg:4326') #Transformando o dataframe num geodataframe
     dado_filtrado = dado.groupby('name_muni').max().reset_index().iloc[:,:][lista_apps] #Criando um dataframe só com os apps como coluna
     dados_economicos = dado.groupby('name_muni').max().reset_index().iloc[:, -4:]
-    print(dados_economicos.columns)
     dado_filtrado['app'] = dado_filtrado.idxmax(axis=1) #Pegando os nomes de coluna com maior valor e colocando numa nova coluna
     dado_filtrado.fillna(0, inplace=True) #Trocando nulo por 0
     #dado = dado.iloc[:len(dado_filtrado)] #Filtrando o dataframe
@@ -197,8 +196,8 @@ def social_dataframe(lista_apps, country, estado, start_date, final_date, dicion
     #dado_somado = dado_somado.dropna(subset=['max']) #Excluir o nulo da coluna max
 
     dado_final = pd.concat([dado_somado, dados_economicos], axis=1).drop_duplicates(subset='code_muni').iloc[:,:-3].fillna(0)
-    dado_final['geometry'] = dado_final['geometry'].astype(str)
-    dado_final.to_excel('dado_final.xlsx')
+    dado_final['geometry'] = dado_final['geometry'].astype(str).apply(wkt.loads)
+    #dado_final.to_excel('dado_final.xlsx')
     return dado_final
 
 
@@ -264,7 +263,6 @@ def tendencia_mensal2(apps_lista, state, color, data_inicial, data_final):
       df['data'] = data_inicial
       df_lista.append(df)
   df_final = pd.concat(df_lista).reset_index()
-  print(df_final)
 
  
   df_final2 = df_final[df_final['geoCode'] == f'BR-{state}'].set_index('data')
