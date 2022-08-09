@@ -305,6 +305,7 @@ state_sigla = {'SP':'State of São Paulo',
 'AL':'State of Alagoas',
 'AP':'State of Amapá',
 'AM':'State of Amazonas',
+'PR':'State of Paraná'
 }
 
 
