@@ -149,7 +149,18 @@ class GeoEstimation():
         #plt.title(f'{estado}, {self.start_date} ~ {self.final_date}', fontsize=8)
         ax.axis("off")
         #plt.savefig(f'maps/{self.app}_map_{self.estado}.png')
-
+        
+        
+  def similar_keywords(self, estado):
+        self.estado = estado
+        inicio = datetime.strptime(self.start_date, '%d-%m-%Y').strftime('%Y-%m-%d')
+        final = datetime.strptime(self.final_date, '%d-%m-%Y').strftime('%Y-%m-%d')
+        #pytrends = TrendReq(hl='pt-BR')
+        self.pytrends.build_payload([self.app], timeframe=f'{inicio} {final}', geo=f'BR-{self.estado}')
+        dicio = {}
+        for i in self.app:
+          dicio[i] = pytrends.related_queries()[i]['top'].rename(columns={'query':i})
+        return dicio
 
 
 
@@ -458,3 +469,8 @@ if st.button('Clusters univariados'):
     
     st.markdown('União dos clusters HH:')
     st.text(set.union(*set_list))     
+    
+if st.button('Pesquisas relacionadas'):
+    tabelas = geo.similar_keywords(estado=state)
+    for i in app:
+        st.dataframe(tabelas[i])
