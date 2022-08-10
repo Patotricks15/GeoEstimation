@@ -55,7 +55,7 @@ def otimizar_k(tabela, coluna, k_min, k_max, p_value=0.05):
     valores = pd.DataFrame({'moran_index':i_list,
               'p_value':p_list,
               'k':k_list}, index = k_list).sort_values('k')
-  return valores[valores['k'] > 0].set_index('k').query(f'p_value <= {p_value}')['moran_index'].idxmax()
+  return valores
     
 def weights_matrix(dados, k, metric='rainha'):
     # Calculate Weights
