@@ -470,6 +470,7 @@ if st.button('Clusters univariados'):
     st.markdown('União dos clusters HH:')
     st.text(set.union(*set_list))     
     
+st.markdown('## Análise de pesquisas relacionadas')
 if st.button('Pesquisas relacionadas'):
     tabelas = geo.similar_keywords(state)
     for i in app:
