@@ -152,10 +152,11 @@ class GeoEstimation():
         
         
   def similar_keywords(self, estado):
+        self.estado = estado
         inicio = datetime.strptime(self.start_date, '%d-%m-%Y').strftime('%Y-%m-%d')
         final = datetime.strptime(self.final_date, '%d-%m-%Y').strftime('%Y-%m-%d')
         pytrends = TrendReq(hl='pt-BR')
-        pytrends.build_payload(self.app, timeframe=f'{inicio} {final}', geo=f'BR-{estado}')
+        pytrends.build_payload(self.app, timeframe=f'{inicio} {final}', geo=f'BR-{self.estado}')
         dicio = {}
         for i in self.app:
           dicio[i] = pytrends.related_queries()[i]['top'].rename(columns={'query':i})
