@@ -464,13 +464,10 @@ if st.button('Clusters univariados'):
           pesos = weights_matrix(dado, metric = 'knn', k = i_moran)
           st.pyplot(plot_lisa(dado, j, weights= pesos, k_opt=i_moran, estado=state))
           st.text(f'Municípios HH para {j}: {", ".join(significant_HH(dado, j, weight= pesos))}')
+          dicio_cluster.update({j:significant_HH(dado, j, weight= pesos)})
+          set_list.append(set(dicio_cluster[j]))
         except:
           pass
-        try:
-          dicio_cluster.update({j:significant_HH(dado, j, weight= pesos)})
-        except:
-          dicio_cluster.update({j:[]})
-        set_list.append(set(dicio_cluster[j]))
     st.markdown(f'Interseção dos clusters HH:')
     st.text(set.intersection(*set_list))
     
