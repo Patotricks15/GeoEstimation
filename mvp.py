@@ -468,11 +468,14 @@ if st.button('Clusters univariados'):
           set_list.append(set(dicio_cluster[j]))
         except:
           pass
-    st.markdown(f'Interseção dos clusters HH:')
-    st.text(set.intersection(*set_list))
-    
-    st.markdown('União dos clusters HH:')
-    st.text(set.union(*set_list))     
+    try:
+      st.markdown(f'Interseção dos clusters HH:')
+      st.text(set.intersection(*set_list))
+
+      st.markdown('União dos clusters HH:')
+      st.text(set.union(*set_list))
+    except:
+      st.text('Não foram encontrados clusters')
     
 st.markdown('## Análise de pesquisas relacionadas')
 if st.button('Pesquisas relacionadas'):
