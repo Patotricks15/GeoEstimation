@@ -159,8 +159,8 @@ class GeoEstimation():
         pytrends.build_payload(self.app, timeframe=f'{inicio} {final}', geo=f'BR-{self.estado}')
         dicio = {}
         for i in self.app:
-          time.sleep(1)
           dicio[i] = pytrends.related_queries()[i]['top'].rename(columns={'query':i})
+          time.sleep(1)
         return dicio
 
 
