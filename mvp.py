@@ -457,13 +457,19 @@ if st.button('Clusters univariados'):
     dicio_cluster = {}
     set_list = []
     for j in app:
-        dado = read_geodata(dicionario_arquivos[f'{j}_{state}_with_geometry'])
-        #dado = state_df
-        i_moran = otimizar_k(dado, j, 1, 10, p_value=0.05)
-        pesos = weights_matrix(dado, metric = 'knn', k = i_moran)
-        st.pyplot(plot_lisa(dado, j, weights= pesos, k_opt=i_moran, estado=state))
-        st.text(f'Municípios HH para {j}: {", ".join(significant_HH(dado, j, weight= pesos))}')
-        dicio_cluster.update({j:significant_HH(dado, j, weight= pesos)})
+        try:
+          dado = read_geodata(dicionario_arquivos[f'{j}_{state}_with_geometry'])
+          #dado = state_df
+          i_moran = otimizar_k(dado, j, 1, 10, p_value=0.05)
+          pesos = weights_matrix(dado, metric = 'knn', k = i_moran)
+          st.pyplot(plot_lisa(dado, j, weights= pesos, k_opt=i_moran, estado=state))
+          st.text(f'Municípios HH para {j}: {", ".join(significant_HH(dado, j, weight= pesos))}')
+        except:
+          pass
+        try:
+          dicio_cluster.update({j:significant_HH(dado, j, weight= pesos)})
+        except:
+          dicio_cluster.update({j:[]})
         set_list.append(set(dicio_cluster[j]))
     st.markdown(f'Interseção dos clusters HH:')
     st.text(set.intersection(*set_list))
