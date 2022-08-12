@@ -96,7 +96,6 @@ class GeoEstimation():
         final = datetime.strptime(self.final_date, '%d-%m-%Y').strftime('%Y-%m-%d')
         #df_brasil = GeoEstimation(self.app, self.country, start_date=self.start_date, final_date=self.final_date).dataframe()
         pytrends = TrendReq(hl='pt-BR')
-        pytrends = TrendReq(hl='en-US', tz=360, timeout=(10,25), proxies=['https://34.203.233.13:80',], retries=2, backoff_factor=0.1, requests_args={'verify':False})
         pytrends.build_payload([self.app], timeframe=f'{inicio} {final}', geo=f'BR-{self.estado}')
         df_muni = interest_by_city(pytrends, inc_low_vol=True).sort_values(self.app, ascending=False)
         df_muni = df_muni[df_muni[self.app] >=1]
@@ -157,7 +156,6 @@ class GeoEstimation():
         inicio = datetime.strptime(self.start_date, '%d-%m-%Y').strftime('%Y-%m-%d')
         final = datetime.strptime(self.final_date, '%d-%m-%Y').strftime('%Y-%m-%d')
         pytrends = TrendReq(hl='pt-BR')
-        pytrends = TrendReq(hl='en-US', tz=360, timeout=(10,25), proxies=['https://34.203.233.13:80',], retries=2, backoff_factor=0.1, requests_args={'verify':False})
         pytrends.build_payload(self.app, timeframe=f'{inicio} {final}', geo=f'BR-SP')
         dicio = {}
         for i in self.app:
