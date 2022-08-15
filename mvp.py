@@ -491,7 +491,7 @@ if botao_tendencia:
     plt.box(False)
     plt.xlabel('data')
     plt.ylabel('Google Trends Index')
-    plt.ylim(0,100)
+    plt.ylim(0,60)
     st.pyplot(fig2)
 
 
