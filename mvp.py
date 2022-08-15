@@ -165,6 +165,7 @@ class GeoEstimation():
         return dicio
 
   def graph(self, estado):
+      try:
         self.estado = estado
         inicio = datetime.strptime(self.start_date, '%d-%m-%Y').strftime('%Y-%m-%d')
         final = datetime.strptime(self.final_date, '%d-%m-%Y').strftime('%Y-%m-%d')
@@ -192,7 +193,6 @@ class GeoEstimation():
         raw_weigths = np.array([G[u][v]['weigth'] for u, v in edges])
         weigths = normalize(raw_weigths)
 
-
         # Cores das bolinhas
         color_map = []
         for node in G:
@@ -212,7 +212,8 @@ class GeoEstimation():
 
         plt.figure(figsize=(10,10))
         return nx.draw_planar(G, with_labels=True, node_size=1000, width=list(weigths), edge_color = colors, node_color=color_map)
-
+      except Exception as e:
+        return e
 
 def social_dataframe(lista_apps, country, estado, start_date, final_date, dicionario):
     '''
