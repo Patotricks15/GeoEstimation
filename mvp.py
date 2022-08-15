@@ -213,9 +213,9 @@ class GeoEstimation():
             #     color_map.append(node_colors[2])
             # else:
             #     color_map.append('#ccdcff')
-
-        plt.figure(figsize=(10,10))
-        return nx.draw_planar(G, with_labels=True, node_size=1000, width=list(weigths), edge_color = colors, node_color=color_map)
+        fig,ax = plt.subplots(figsize=(10,10))
+        nx.draw_planar(G, with_labels=True, node_size=1000, width=list(weigths), edge_color = colors, node_color=color_map)
+        return fig
 
 def social_dataframe(lista_apps, country, estado, start_date, final_date, dicionario):
     '''
