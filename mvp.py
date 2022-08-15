@@ -429,7 +429,7 @@ if st.button('Estimativa socioeconômica'):
     df_pib_pot = df[app+['pib','pib_per_capita', 'populacao','IDH','gini']]
     for i in app:
       st.text(i)
-      st.text(df[df[i] > 0]['name_muni'].sort_values(i,ascending=False))
+      st.text(df[df[i] > 0]['name_muni'].sort_values(by=i,ascending=False))
     for i in lista_app:
       df_pib_pot[f'taxa_{i}'] = (df_pib_pot[i] / df_pib_pot[lista_app].sum(axis=1)) * (df_pib_pot[i] /100)
     df_pib_pot = df_pib_pot.dropna(0)
