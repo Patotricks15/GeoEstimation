@@ -165,14 +165,18 @@ class GeoEstimation():
         return dicio
 
   def graph(self, estado):
-      try:
         self.estado = estado
         inicio = datetime.strptime(self.start_date, '%d-%m-%Y').strftime('%Y-%m-%d')
         final = datetime.strptime(self.final_date, '%d-%m-%Y').strftime('%Y-%m-%d')
         pytrends = TrendReq(hl='pt-BR')
         apps = self.app
-        pytrends.build_payload([self.app], timeframe=f'{inicio} {final}', geo=f'BR-{self.estado}')
+        pytrends.build_payload(self.app, timeframe=f'{inicio} {final}', geo=f'BR-{self.estado}')
         dicio = {}
+        def normalize(x):
+          min_max_scaler = preprocessing.MinMaxScaler()
+          x_scaled = min_max_scaler.fit_transform(np.array(x).reshape(-1,1))
+          novo_x = (pd.DataFrame(x_scaled) +1) ** 2
+          return np.array(novo_x[0]) 
         for i in apps:
           time.sleep(1)
           dicio[i] = pytrends.related_queries()[i]['top'].rename(columns={'query':i})
@@ -212,8 +216,6 @@ class GeoEstimation():
 
         plt.figure(figsize=(10,10))
         return nx.draw_planar(G, with_labels=True, node_size=1000, width=list(weigths), edge_color = colors, node_color=color_map)
-      except Exception as e:
-        return e
 
 def social_dataframe(lista_apps, country, estado, start_date, final_date, dicionario):
     '''
@@ -341,12 +343,6 @@ def tendencia_brasil(apps_lista, state, data_inicial, data_final):
     #{data_inicial.split("-")[2]}-{data_inicial.split("-")[1]}-{data_inicial.split("-")[0]} {data_final.split("-")[2]}-{data_final.split("-")[1]}-{data_final.split("-")[0]}
     df = pytrends.interest_over_time().drop(columns='isPartial')
     return df
-
-def normalize(x):
-  min_max_scaler = preprocessing.MinMaxScaler()
-  x_scaled = min_max_scaler.fit_transform(np.array(x).reshape(-1,1))
-  novo_x = (pd.DataFrame(x_scaled) +1) ** 2
-  return np.array(novo_x[0])
 
 #############################################################################
 
@@ -541,4 +537,4 @@ if st.button('Pesquisas relacionadas'):
     tabelas = geo.similar_keywords(state)
     for i in app:
         st.dataframe(tabelas[i])
-    st.write(geo.graph(state))
+    st.pyplot(geo.graph(state))
