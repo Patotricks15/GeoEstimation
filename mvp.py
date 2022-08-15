@@ -170,7 +170,7 @@ class GeoEstimation():
         final = datetime.strptime(self.final_date, '%d-%m-%Y').strftime('%Y-%m-%d')
         pytrends = TrendReq(hl='pt-BR')
         apps = self.app
-        pytrends.build_payload(self.app, timeframe=f'{inicio} {final}', geo=f'BR-{self.estado}')
+        pytrends.build_payload([self.app], timeframe=f'{inicio} {final}', geo=f'BR-{self.estado}')
         dicio = {}
         for i in apps:
           time.sleep(1)
