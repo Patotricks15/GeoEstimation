@@ -541,4 +541,4 @@ if st.button('Pesquisas relacionadas'):
     tabelas = geo.similar_keywords(state)
     for i in app:
         st.dataframe(tabelas[i])
-    st.pyplot(geo.graph(state))
+    st.write(geo.graph(state))
