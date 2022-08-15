@@ -211,7 +211,7 @@ class GeoEstimation():
             #     color_map.append('#ccdcff')
 
         plt.figure(figsize=(10,10))
-        nx.draw_planar(G, with_labels=True, node_size=1000, width=list(weigths), edge_color = colors, node_color=color_map)
+        return nx.draw_planar(G, with_labels=True, node_size=1000, width=list(weigths), edge_color = colors, node_color=color_map)
 
 
 def social_dataframe(lista_apps, country, estado, start_date, final_date, dicionario):
@@ -536,3 +536,4 @@ if st.button('Pesquisas relacionadas'):
     tabelas = geo.similar_keywords(state)
     for i in app:
         st.dataframe(tabelas[i])
+    st.pyplot(graph(state))
