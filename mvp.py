@@ -338,7 +338,7 @@ def tendencia_brasil(apps_lista, state, data_inicial, data_final):
     pytrends = TrendReq(hl='pt-BR')
     pytrends.build_payload(apps_lista, timeframe=f'{data_inicial} {data_final}', geo=f'BR')
     #{data_inicial.split("-")[2]}-{data_inicial.split("-")[1]}-{data_inicial.split("-")[0]} {data_final.split("-")[2]}-{data_final.split("-")[1]}-{data_final.split("-")[0]}
-    df = pytrends.interest_over_time().drop(columns='isPartial')
+    df = pytrends.interest_over_time().drop(columns='isPartial').resample('M').mean()
     return df
 
 def normalize(x):
@@ -487,7 +487,7 @@ if botao_tendencia:
     brasil_df = brasil_df[brasil_df['Km de vantagens'] < 90]
     brasil_df[app_color_dict['app']].plot(ax=ax2,label=app_color_dict['app'], color=[i[:-1] if i[-1] == 's' else i for i in app_color_dict['cor']])
     plt.rcParams.update({"font.size": 10})
-    plt.title(f'Evolução semanal no Brasil, {data_inicial.split("-")[2]}', fontsize=15)
+    plt.title(f'Evolução mensal no Brasil, {data_inicial.split("-")[2]}', fontsize=15)
     plt.box(False)
     plt.xlabel('data')
     plt.ylabel('Google Trends Index')
