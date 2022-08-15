@@ -22,7 +22,8 @@ from dateutil.rrule import rrule, MONTHLY
 import time
 import streamlit as st
 from autoaede_functions import plot_lisa, otimizar_k, weights_matrix, read_geodata, significant_HH
-
+import networkx as nx
+from sklearn import preprocessing
 warnings.filterwarnings("ignore")
 
 
@@ -163,6 +164,54 @@ class GeoEstimation():
           time.sleep(1)
         return dicio
 
+  def graph(self, estado):
+        self.estado = estado
+        inicio = datetime.strptime(self.start_date, '%d-%m-%Y').strftime('%Y-%m-%d')
+        final = datetime.strptime(self.final_date, '%d-%m-%Y').strftime('%Y-%m-%d')
+        pytrends = TrendReq(hl='pt-BR')
+        apps = self.app
+        pytrends.build_payload(apps, timeframe=f'{inicio} {final}', geo=f'BR-{self.estado}')
+        dicio = {}
+        for i in apps:
+          time.sleep(1)
+          dicio[i] = pytrends.related_queries()[i]['top'].rename(columns={'query':i})
+        node_colors=('blue', 'red')
+        G = nx.Graph()
+        # df_delivery = dicio['delivery'][:5]
+        # ddicio[key][:5]
+
+        # Cores das linhas
+        for key in apps:
+          G.add_node(key)
+          for i, v in dicio[key][:5].iterrows():
+            G.add_edge(key, v[key],color=node_colors[apps.index(key)], weigth=v['value'])
+
+        edges = G.edges()
+        colors = [G[u][v]['color'] for u, v in edges]
+        # weights = [(G[u][v]['weigth'] / 50)**3 for u,v in edges]
+        raw_weigths = np.array([G[u][v]['weigth'] for u, v in edges])
+        weigths = normalize(raw_weigths)
+
+
+        # Cores das bolinhas
+        color_map = []
+        for node in G:
+          if node not in apps:
+            color_map.append('#ccdcff')
+          else:
+            color_map.append(node_colors[apps.index(node)])
+
+            # if node == apps[0]:
+            #     color_map.append(node_colors[0])
+            # elif node == apps[1]:
+            #     color_map.append(node_colors[1])
+            # elif node == apps[2]:
+            #     color_map.append(node_colors[2])
+            # else:
+            #     color_map.append('#ccdcff')
+
+        plt.figure(figsize=(10,10))
+        nx.draw_planar(G, with_labels=True, node_size=1000, width=list(weigths), edge_color = colors, node_color=color_map)
 
 
 def social_dataframe(lista_apps, country, estado, start_date, final_date, dicionario):
@@ -292,6 +341,11 @@ def tendencia_brasil(apps_lista, state, data_inicial, data_final):
     df = pytrends.interest_over_time().drop(columns='isPartial')
     return df
 
+def normalize(x):
+  min_max_scaler = preprocessing.MinMaxScaler()
+  x_scaled = min_max_scaler.fit_transform(np.array(x).reshape(-1,1))
+  novo_x = (pd.DataFrame(x_scaled) +1) ** 2
+  return np.array(novo_x[0])
 
 #############################################################################
 
