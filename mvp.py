@@ -164,22 +164,14 @@ class GeoEstimation():
           time.sleep(1)
         return dicio
 
-  def graph(self, estado):
-        self.estado = estado
-        inicio = datetime.strptime(self.start_date, '%d-%m-%Y').strftime('%Y-%m-%d')
-        final = datetime.strptime(self.final_date, '%d-%m-%Y').strftime('%Y-%m-%d')
-        pytrends = TrendReq(hl='pt-BR')
+  def graph(self, tabela):
         apps = self.app
-        pytrends.build_payload(self.app, timeframe=f'{inicio} {final}', geo=f'BR-{self.estado}')
         dicio = {}
         def normalize(x):
           min_max_scaler = preprocessing.MinMaxScaler()
           x_scaled = min_max_scaler.fit_transform(np.array(x).reshape(-1,1))
           novo_x = (pd.DataFrame(x_scaled) +1) ** 2
-          return np.array(novo_x[0]) 
-        for i in apps:
-          time.sleep(1)
-          dicio[i] = pytrends.related_queries()[i]['top'].rename(columns={'query':i})
+          return np.array(novo_x[0])
         node_colors=('blue', 'red')
         G = nx.Graph()
         # df_delivery = dicio['delivery'][:5]
@@ -188,7 +180,7 @@ class GeoEstimation():
         # Cores das linhas
         for key in apps:
           G.add_node(key)
-          for i, v in dicio[key][:5].iterrows():
+          for i, v in tabela[key][:5].iterrows():
             G.add_edge(key, v[key],color=node_colors[apps.index(key)], weigth=v['value'])
 
         edges = G.edges()
@@ -213,7 +205,7 @@ class GeoEstimation():
             #     color_map.append(node_colors[2])
             # else:
             #     color_map.append('#ccdcff')
-        fig,ax = plt.subplots(figsize=(10,10))
+        fig, ax = plt.subplots(figsize=(10,10))
         nx.draw_planar(G, with_labels=True, node_size=1000, width=list(weigths), edge_color = colors, node_color=color_map)
         return fig
 
