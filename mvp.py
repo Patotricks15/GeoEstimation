@@ -484,7 +484,7 @@ if botao_tendencia:
     
     fig2, ax2 =plt.subplots(1,1, figsize=(10, 6), dpi=200)   
     brasil_df = tendencia_brasil(app, state, data_inicial=data_inicial, data_final=data_final)
-    st.table(brasil_df)
+    brasil_df = brasil_df[brasil_df['Abastece aí'] < 90]
     brasil_df[app_color_dict['app']].plot(ax=ax2,label=app_color_dict['app'], color=[i[:-1] if i[-1] == 's' else i for i in app_color_dict['cor']])
     plt.rcParams.update({"font.size": 10})
     plt.title(f'Evolução semanal no Brasil, {data_inicial.split("-")[2]}', fontsize=15)
