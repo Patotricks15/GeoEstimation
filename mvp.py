@@ -162,6 +162,10 @@ class GeoEstimation():
         for i in self.app:
           dicio[i] = pytrends.related_queries()[i]['top'].rename(columns={'query':i})
           time.sleep(1)
+        return dicio
+
+
+  def graph(self, tabela):
         apps = self.app
         dicio = {}
         def normalize(x):
@@ -177,7 +181,7 @@ class GeoEstimation():
         # Cores das linhas
         for key in apps:
           G.add_node(key)
-          for i, v in dicio[key][:5].iterrows():
+          for i, v in tabela[key][:5].iterrows():
             G.add_edge(key, v[key],color=node_colors[apps.index(key)], weigth=v['value'])
 
         edges = G.edges()
@@ -204,7 +208,7 @@ class GeoEstimation():
             #     color_map.append('#ccdcff')
         fig, ax = plt.subplots(figsize=(10,10))
         nx.draw_planar(G, with_labels=True, node_size=1000, width=list(weigths), edge_color = colors, node_color=color_map)
-        return dicio, fig
+        return fig
 
 def social_dataframe(lista_apps, country, estado, start_date, final_date, dicionario):
     '''
