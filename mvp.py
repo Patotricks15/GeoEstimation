@@ -527,7 +527,7 @@ if st.button('Clusters univariados'):
     
 st.markdown('## Análise de pesquisas relacionadas')
 if st.button('Pesquisas relacionadas'):
-    tabelas = geo.similar_keywords(state)[0]
+    tabelas = geo.similar_keywords(state)
     for i in app:
         st.dataframe(tabelas[i])
-    st.pyplot(geo.similar_keywords(state)[1])
+    st.pyplot(geo.similar_keywords(state, tabela=tabelas))
