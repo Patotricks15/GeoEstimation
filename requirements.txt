@@ -14,5 +14,6 @@ contextily
 openpyxl
 sklearn
 splot
+plotly
 click<=8.0.4
 streamlit
