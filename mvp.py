@@ -138,7 +138,7 @@ class GeoEstimation():
         #dado_estim = geoestimation_get_municip
         dado = gpd.GeoDataFrame(dado_estim, crs='epsg:4326')
         #dado = dado_estado.merge(dado_estim, how='left', on='name_muni').fillna(0)
-        '''
+        
         plt.rcParams.update({"font.size": 10})
         fig, ax = plt.subplots(figsize=(8, 8), dpi=200)
         fig = dado.plot(
@@ -156,7 +156,8 @@ class GeoEstimation():
         )
         plt.title(f"Pesquisas por {self.app} no Google\n{estado}, {self.start_date} ~ {self.final_date}", fontsize=15)
         #plt.title(f'{estado}, {self.start_date} ~ {self.final_date}', fontsize=8)
-        ax.axis("off")'''
+        ax.axis("off")
+        '''
         fig = px.choropleth(
         #geo_final, #soybean database
         locations = dado['name_muni'], #define the limits on the map/geography
@@ -169,7 +170,8 @@ class GeoEstimation():
         )
         fig.update_geos(fitbounds = "locations", visible = False)
         return fig
-        #plt.savefig(f'maps/{self.app}_map_{self.estado}.png')
+        #plt.savefig(f'maps/{self.app}_map_{self.estado}.png')'''
+        
         
         
   def similar_keywords(self, estado):
