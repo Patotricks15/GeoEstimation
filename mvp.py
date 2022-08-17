@@ -168,6 +168,7 @@ class GeoEstimation():
          #animation_frame = 'ano' #creating the application based on the year
         )
         fig.update_geos(fitbounds = "locations", visible = False)
+        return fig
         #plt.savefig(f'maps/{self.app}_map_{self.estado}.png')
         
         
