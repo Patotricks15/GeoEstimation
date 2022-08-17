@@ -115,7 +115,10 @@ class GeoEstimation():
         df_final = pd.DataFrame()
         df_final['name_muni'] = df_muni['geoName'].str.title()
         df_final[self.app] = df_muni[self.app]
-        dado_estado = geobr.read_municipality(code_muni=self.estado, year=2020)
+        #dado_estado = geobr.read_municipality(code_muni=self.estado, year=2020)
+        dado_estado = pd.read_csv('municipalidade.csv')
+        dado_estado = dado_estado[dado_estado['abbrev_state'] == self.estado]
+        print(dado_estado)
         dado = dado_estado.merge(df_final, how='left', on='name_muni').fillna(0)
         #df_final['geo_downloads_estimation'] = abs(round(df_muni[f'{self.app}_taxa'] * df_brasil[df_brasil['abbrev_state'] == self.estado]['geo_downloads_estimation'].values[0]))
         #dado.to_csv(f'excel_results/{self.country}/{self.app}_{self.estado}_with_geometry.csv')
