@@ -115,7 +115,7 @@ class GeoEstimation():
         df_final = pd.DataFrame()
         df_final['name_muni'] = df_muni['geoName'].str.title()
         df_final[self.app] = df_muni[self.app]
-        dado_estado = geobr.read_municipality(code_muni='all', year=2020).query(f'abbrev_state = {self.estado}')
+        dado_estado = geobr.read_municipality(code_muni='all', year=2020).query(f'abbrev_state == "{self.estado}"')
         dado_estado = dado_estado[dado_estado['abbrev_state'] == self.estado]
         print(dado_estado)
         dado = dado_estado.merge(df_final, how='left', on='name_muni').fillna(0)
