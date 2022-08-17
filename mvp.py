@@ -103,7 +103,7 @@ class GeoEstimation():
         #df_brasil = GeoEstimation(self.app, self.country, start_date=self.start_date, final_date=self.final_date).dataframe()
         pytrends = TrendReq(hl='pt-BR')
         pytrends.build_payload([self.app], timeframe=f'{inicio} {final}', geo=f'BR-{self.estado}')
-        df_muni = interest_by_city(pytrends, inc_low_vol=False).sort_values(self.app, ascending=False)
+        df_muni = interest_by_city(pytrends, inc_low_vol=True).sort_values(self.app, ascending=False)
         df_muni = df_muni[df_muni[self.app] >=1]
         #df_muni[f'{self.app}_taxa'] = df_muni[self.app] / df_muni[self.app].sum()
         
