@@ -432,7 +432,7 @@ if st.button('Exibir tabela (Estado)'):
 if st.button('Exibir mapa (Estado)'):
     for row, value in app_color_dict.iterrows():
         st.text(value['app'])
-        st.pyplot(GeoEstimation(value['app'], 'BR', start_date=data_inicial, final_date=data_final).municip_map(state, cor = value['cor'], dicionario=dicionario_arquivos, geojson=geojson_sp))
+        st.plotly_chart(GeoEstimation(value['app'], 'BR', start_date=data_inicial, final_date=data_final).municip_map(state, cor = value['cor'], dicionario=dicionario_arquivos, geojson=geojson_sp))
 if st.button('Estimativa socioeconômica'):
     df = state_df
     lista_app = app
