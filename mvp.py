@@ -24,6 +24,10 @@ import streamlit as st
 from autoaede_functions import plot_lisa, otimizar_k, weights_matrix, read_geodata, significant_HH
 import networkx as nx
 from sklearn import preprocessing
+import plotly.express as px
+import json
+from urllib.request import urlopen
+
 warnings.filterwarnings("ignore")
 
 
@@ -64,6 +68,7 @@ class GeoEstimation():
     '''
     dado = GeoEstimation(self.app, self.country, self.start_date, self.final_date).dataframe(dicionario)
     #dado = geoestimation_dataframe
+    
     plt.rcParams.update({"font.size": 10})
     fig, ax = plt.subplots(figsize=(8, 8), dpi=200)
     fig = dado.plot(
@@ -117,7 +122,7 @@ class GeoEstimation():
         dicionario.update({f'{self.app}_{self.estado}_with_geometry' : dado})
         return dado
     
-  def municip_map(self, estado, cor, dicionario): #novo parametro -> geoestimation_get_municip
+  def municip_map(self, estado, cor, dicionario, geojson): #novo parametro -> geoestimation_get_municip
         '''
         Essa função retorna o mapa do município e do Índice Google Trends.
         
@@ -131,6 +136,7 @@ class GeoEstimation():
         #dado_estim = geoestimation_get_municip
         dado = gpd.GeoDataFrame(dado_estim, crs='epsg:4326')
         #dado = dado_estado.merge(dado_estim, how='left', on='name_muni').fillna(0)
+        '''
         plt.rcParams.update({"font.size": 10})
         fig, ax = plt.subplots(figsize=(8, 8), dpi=200)
         fig = dado.plot(
@@ -148,7 +154,18 @@ class GeoEstimation():
         )
         plt.title(f"Pesquisas por {self.app} no Google\n{estado}, {self.start_date} ~ {self.final_date}", fontsize=15)
         #plt.title(f'{estado}, {self.start_date} ~ {self.final_date}', fontsize=8)
-        ax.axis("off")
+        ax.axis("off")'''
+        fig = px.choropleth(
+        #geo_final, #soybean database
+        locations = dado['name_muni'], #define the limits on the map/geography
+        geojson = geojson_sp, #shape information
+        featureidkey='properties.name',
+        color_continuous_scale=cor,
+        color = dado[self.app], #defining the color of the scale through the database
+        title = self.app, #title of the map
+         #animation_frame = 'ano' #creating the application based on the year
+        )
+        fig.update_geos(fitbounds = "locations", visible = False)
         #plt.savefig(f'maps/{self.app}_map_{self.estado}.png')
         
         
@@ -364,7 +381,8 @@ state_sigla = {'SP':'State of São Paulo',
 'PR':'State of Paraná'
 }
 
-
+with urlopen('https://raw.githubusercontent.com/tbrugz/geodata-br/master/geojson/geojs-35-mun.json') as response:
+ geojson_sp = json.load(response) # Javascrip object notation 
 
 data_inicial = st.text_input('Data inicial: dia-mes-ano')
 data_final = st.text_input('Data final: dia-mes-ano')
@@ -412,7 +430,7 @@ if st.button('Exibir tabela (Estado)'):
 if st.button('Exibir mapa (Estado)'):
     for row, value in app_color_dict.iterrows():
         st.text(value['app'])
-        st.pyplot(GeoEstimation(value['app'], 'BR', start_date=data_inicial, final_date=data_final).municip_map(state, cor = value['cor'], dicionario=dicionario_arquivos))
+        st.pyplot(GeoEstimation(value['app'], 'BR', start_date=data_inicial, final_date=data_final).municip_map(state, cor = value['cor'], dicionario=dicionario_arquivos, geojson=geojson_sp))
 if st.button('Estimativa socioeconômica'):
     df = state_df
     lista_app = app
