@@ -432,7 +432,7 @@ st.markdown('## Análise no Estado')
 if st.button('Exibir tabela (Estado)'):
     #st.text('visualizar')
     #st.text(state_df.columns)[['name_muni', 'abbrev_state', 'populacao', 'pib', 'IDH', 'pib_per_capita','app', 'soma', 'max']+app]
-    geo_state_dataframe = geo..get_municip(state, dicionario_arquivos)
+    geo_state_dataframe = geo.get_municip(state, dicionario_arquivos)
     #state_df[['name_muni', 'abbrev_state', 'app']+app]
     #geo_state_dataframe = state_df
     st.dataframe(geo_state_dataframe)
