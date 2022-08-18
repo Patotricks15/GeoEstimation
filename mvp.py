@@ -106,7 +106,8 @@ class GeoEstimation():
         df_muni = interest_by_city(pytrends, inc_low_vol=False).sort_values(self.app, ascending=False)
         #df_muni = df_muni[df_muni[self.app] >=1]
         #df_muni[f'{self.app}_taxa'] = df_muni[self.app] / df_muni[self.app].sum()
-        
+        dado = df_muni
+        '''
         df_muni = df_muni.reset_index()
         
         #df_estado = df_brasil[df_brasil['abbrev_state'] == self.estado].reset_index()
@@ -120,7 +121,7 @@ class GeoEstimation():
         print(dado_estado)
         dado = dado_estado.merge(df_final, how='left', on='name_muni').fillna(0)
         #df_final['geo_downloads_estimation'] = abs(round(df_muni[f'{self.app}_taxa'] * df_brasil[df_brasil['abbrev_state'] == self.estado]['geo_downloads_estimation'].values[0]))
-        #dado.to_csv(f'excel_results/{self.country}/{self.app}_{self.estado}_with_geometry.csv')
+        #dado.to_csv(f'excel_results/{self.country}/{self.app}_{self.estado}_with_geometry.csv')'''
         dicionario.update({f'{self.app}_{self.estado}_with_geometry' : dado})
         return dado
     
