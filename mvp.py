@@ -410,8 +410,7 @@ df_potencial = {'app':[],
 def start_read():
     dicionario_arquivos = {}
     geo = GeoEstimation(app, pais, start_date=data_inicial, final_date=data_final)
-    #state_df = social_dataframe(app, 'BR', estado=state, start_date=data_inicial, final_date=data_final, dicionario = dicionario_arquivos)
-    state_df=None
+    state_df = social_dataframe(app, 'BR', estado=state, start_date=data_inicial, final_date=data_final, dicionario = dicionario_arquivos)
     return geo, state_df, dicionario_arquivos
 #state_df = []
 
@@ -432,7 +431,7 @@ if st.button('Exibir tabela (Estado)'):
     #st.text('visualizar')
     #st.text(state_df.columns)[['name_muni', 'abbrev_state', 'populacao', 'pib', 'IDH', 'pib_per_capita','app', 'soma', 'max']+app]
     #geo_state_dataframe = state_df[['name_muni', 'abbrev_state', 'app']+app]
-    geo_state_dataframe = geo.get_municip(state, dicionario_arquivos)
+    geo_state_dataframe = state_df
     st.dataframe(geo_state_dataframe)
 if st.button('Exibir mapa (Estado)'):
     for row, value in app_color_dict.iterrows():
