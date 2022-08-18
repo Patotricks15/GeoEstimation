@@ -89,7 +89,7 @@ class GeoEstimation():
     #plt.savefig(f'maps/{self.app}_{self.country}_map.png')
     
 
-  def get_municip(self, estado, dicionario):
+  def get_municip(self, estado):
         '''
         Essa função retorna os dados municipais dos Índices Google trends
         
@@ -103,9 +103,8 @@ class GeoEstimation():
         #df_brasil = GeoEstimation(self.app, self.country, start_date=self.start_date, final_date=self.final_date).dataframe()
         pytrends = TrendReq(hl='pt-BR')
         pytrends.build_payload([self.app], timeframe=f'{inicio} {final}', geo=f'BR-{self.estado}')
-        df_muni = interest_by_city(pytrends, inc_low_vol=True)
-        #.sort_values(self.app, ascending=False)
-        df_muni = df_muni[df_muni[self.app] >=1]
+        df_muni = interest_by_city(pytrends, inc_low_vol=False).sort_values(self.app, ascending=False)
+        #df_muni = df_muni[df_muni[self.app] >=1]
         #df_muni[f'{self.app}_taxa'] = df_muni[self.app] / df_muni[self.app].sum()
         
         df_muni = df_muni.reset_index()
@@ -117,7 +116,7 @@ class GeoEstimation():
         df_final['name_muni'] = df_muni['geoName'].str.title()
         df_final[self.app] = df_muni[self.app]
         dado_estado = geobr.read_municipality(code_muni='all', year=2020).query(f'abbrev_state == "{self.estado}"')
-        dado_estado = dado_estado[dado_estado['abbrev_state'] == self.estado]
+        #dado_estado = dado_estado[dado_estado['abbrev_state'] == self.estado]
         print(dado_estado)
         dado = dado_estado.merge(df_final, how='left', on='name_muni').fillna(0)
         #df_final['geo_downloads_estimation'] = abs(round(df_muni[f'{self.app}_taxa'] * df_brasil[df_brasil['abbrev_state'] == self.estado]['geo_downloads_estimation'].values[0]))
