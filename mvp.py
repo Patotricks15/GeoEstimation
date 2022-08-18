@@ -359,7 +359,37 @@ def tendencia_brasil(apps_lista, state, data_inicial, data_final):
     #{data_inicial.split("-")[2]}-{data_inicial.split("-")[1]}-{data_inicial.split("-")[0]} {data_final.split("-")[2]}-{data_final.split("-")[1]}-{data_final.split("-")[0]}
     df = pytrends.interest_over_time().drop(columns='isPartial')
     return df
-
+def get_municip_real(app, estado, start_date, final_date):
+        '''
+        Essa função retorna os dados municipais dos Índices Google trends
+        
+        * Parâmetros:
+        - estado: estado
+        
+        '''
+        inicio = datetime.strptime(start_date, '%d-%m-%Y').strftime('%Y-%m-%d')
+        final = datetime.strptime(final_date, '%d-%m-%Y').strftime('%Y-%m-%d')
+        #df_brasil = GeoEstimation(self.app, self.country, start_date=self.start_date, final_date=self.final_date).dataframe()
+        pytrends = TrendReq(hl='pt-BR')
+        pytrends.build_payload(app, timeframe=f'{inicio} {final}', geo=f'BR-{estado}')
+        df_muni = interest_by_city(pytrends, inc_low_vol=False)
+        #df_muni = df_muni[df_muni[self.app] >=1]
+        #df_muni[f'{self.app}_taxa'] = df_muni[self.app] / df_muni[self.app].sum()
+        
+        df_muni = df_muni.reset_index()
+        dado = df_muni
+        #df_estado = df_brasil[df_brasil['abbrev_state'] == self.estado].reset_index()
+        #print(df_brasil[df_brasil['abbrev_state'] == self.estado]['geo_rating_estimation'].values[0])
+        '''
+        df_final = pd.DataFrame()
+        df_final['name_muni'] = df_muni['geoName'].str.title()
+        df_final[self.app] = df_muni[self.app]
+        dado_estado = geobr.read_municipality(code_muni='all', year=2020).query(f'abbrev_state == "{self.estado}"')
+        #dado_estado = dado_estado[dado_estado['abbrev_state'] == self.estado]
+        print(dado_estado)
+        dado = dado_estado.merge(df_final, how='left', on='name_muni').fillna(0)
+        '''
+        return dado
 #############################################################################
 
 
@@ -420,6 +450,7 @@ def start_read():
 geo = start_read()[0]
 state_df = start_read()[1]
 dicionario_arquivos = start_read()[2]
+df_municipios = get_municip_real(app = app, estado = state, start_date = data_inicial, final_date = data_final)
 
 st.markdown('## Análise no país')
 if st.button('Exibir tabela (país)'):
@@ -433,7 +464,8 @@ st.markdown('## Análise no Estado')
 if st.button('Exibir tabela (Estado)'):
     #st.text('visualizar')
     #st.text(state_df.columns)[['name_muni', 'abbrev_state', 'populacao', 'pib', 'IDH', 'pib_per_capita','app', 'soma', 'max']+app]
-    geo_state_dataframe = state_df[['name_muni', 'abbrev_state', 'app']+app]
+    #geo_state_dataframe = state_df[['name_muni', 'abbrev_state', 'app']+app]
+    geo_state_dataframe = df_municipios
     #geo_state_dataframe = state_df
     st.dataframe(geo_state_dataframe)
 if st.button('Exibir mapa (Estado)'):
