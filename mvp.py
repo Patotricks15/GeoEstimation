@@ -410,7 +410,8 @@ df_potencial = {'app':[],
 def start_read():
     dicionario_arquivos = {}
     geo = GeoEstimation(app, pais, start_date=data_inicial, final_date=data_final)
-    state_df = social_dataframe(app, 'BR', estado=state, start_date=data_inicial, final_date=data_final, dicionario = dicionario_arquivos)
+    #state_df = social_dataframe(app, 'BR', estado=state, start_date=data_inicial, final_date=data_final, dicionario = dicionario_arquivos)
+    state_df=None
     return geo, state_df, dicionario_arquivos
 #state_df = []
 
