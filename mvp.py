@@ -411,7 +411,8 @@ def start_read():
     dicionario_arquivos = {}
     geo = GeoEstimation(app, pais, start_date=data_inicial, final_date=data_final)
     try:
-     state_df = social_dataframe(app, 'BR', estado=state, start_date=data_inicial, final_date=data_final, dicionario = dicionario_arquivos)
+     state_df = GeoEstimation(app, pais, start_date=data_inicial, final_date=data_final).get_municip(state, dicionario_arquivos)
+    #social_dataframe(app, 'BR', estado=state, start_date=data_inicial, final_date=data_final, dicionario = dicionario_arquivos)
     except:
       state_df = None
     return geo, state_df, dicionario_arquivos
