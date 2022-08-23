@@ -466,8 +466,8 @@ if st.button('Exibir tabela (Estado)'):
     #st.text(state_df.columns)[['name_muni', 'abbrev_state', 'populacao', 'pib', 'IDH', 'pib_per_capita','app', 'soma', 'max']+app]
     #geo_state_dataframe = state_df[['name_muni', 'abbrev_state', 'app']+app]
     geo_state_dataframe = df_municipios
-    for i in apps:
-      st.table(geo_state_dataframe[geo_state_dataframe[i] > 0])
+    for i in app:
+      st.text(geo_state_dataframe[geo_state_dataframe[i] > 0]['geoName'].tolist())
     #geo_state_dataframe = state_df
     st.dataframe(geo_state_dataframe)
 if st.button('Exibir mapa (Estado)'):
