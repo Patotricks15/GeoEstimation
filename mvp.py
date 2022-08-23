@@ -246,7 +246,7 @@ def social_dataframe(lista_apps, country, estado, start_date, final_date, dicion
     - final_date: a data final
     '''
     for nome_app in lista_apps:
-        GeoEstimation(nome_app, country, start_date=start_date, final_date=final_date).get_municip(estado, dicionario)
+        GeoEstimation(nome_app, country, start_date=start_date, final_date=final_date).get_municip_real(estado, dicionario)
 
 
     dado_lista = []
@@ -359,7 +359,7 @@ def tendencia_brasil(apps_lista, state, data_inicial, data_final):
     #{data_inicial.split("-")[2]}-{data_inicial.split("-")[1]}-{data_inicial.split("-")[0]} {data_final.split("-")[2]}-{data_final.split("-")[1]}-{data_final.split("-")[0]}
     df = pytrends.interest_over_time().drop(columns='isPartial')
     return df
-def get_municip_real(app, estado, start_date, final_date):
+def get_municip_real(app, estado, start_date, final_date, dicionario):
         '''
         Essa função retorna os dados municipais dos Índices Google trends
         
