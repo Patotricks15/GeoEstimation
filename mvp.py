@@ -480,6 +480,7 @@ if st.button('Estimativa socioeconômica'):
     df = state_df
     lista_app = app
     df_pib_pot = df[app+['pib','pib_per_capita', 'populacao','IDH','gini']]
+    '''
     #for i in app:
      # st.text(i)
       #st.text(df[df[i] > 0].sort_values(by=i,ascending=False)['name_muni'])
@@ -504,8 +505,8 @@ if st.button('Estimativa socioeconômica'):
       df_potencial['|'].append('|')
       df_potencial['PIB_per_capita_medio'].append(round(df_pib_pot[f'pib_per_capita_medio_{i}'].mean(),2))
       df_potencial['idh_medio'].append(df_pib_pot[f'taxa_idh_{i}'].mean())
-      df_potencial['gini_medio'].append(df_pib_pot[f'taxa_gini_{i}'].mean())
-    st.dataframe(df_potencial)
+      df_potencial['gini_medio'].append(df_pib_pot[f'taxa_gini_{i}'].mean())'''
+    st.dataframe(df_pib_pot)
 
 #input_estados_tendencia = st.text_input('Estados para comparar a tendência mensal')
 sigla_estado = state_sigla[state]
