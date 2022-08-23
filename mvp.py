@@ -479,7 +479,8 @@ if st.button('Exibir mapa (Estado)'):
 if st.button('Estimativa socioeconômica'):
     df = state_df
     lista_app = app
-    df_pib_pot = df[app+['pib','pib_per_capita', 'populacao','IDH','gini']]
+    df_pib_pot = df
+    #[app+['pib','pib_per_capita', 'populacao','IDH','gini']]
     '''
     #for i in app:
      # st.text(i)
