@@ -450,7 +450,7 @@ def start_read():
 geo = start_read()[0]
 state_df = start_read()[1]
 dicionario_arquivos = start_read()[2]
-df_municipios = get_municip_real(app = app, estado = state, start_date = data_inicial, final_date = data_final, dicionario=dicionario_arquivos)
+#df_municipios = get_municip_real(app = app, estado = state, start_date = data_inicial, final_date = data_final, dicionario=dicionario_arquivos)
 
 st.markdown('## Análise no país')
 if st.button('Exibir tabela (país)'):
