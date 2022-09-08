@@ -18,5 +18,6 @@ plotly
 mapclassify
 folium
 osmnx
+streamlit-folium
 click<=8.0.4
 streamlit
