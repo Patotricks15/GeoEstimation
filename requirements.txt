@@ -17,7 +17,7 @@ splot
 plotly
 mapclassify
 folium
-osmnx
+osmnx==1.1.2
 streamlit-folium
 click<=8.0.4
 streamlit
