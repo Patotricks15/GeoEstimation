@@ -15,5 +15,8 @@ openpyxl
 sklearn
 splot
 plotly
+mapclassify
+folium
+osmnx
 click<=8.0.4
 streamlit
