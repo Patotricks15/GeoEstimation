@@ -2,6 +2,7 @@ numpy==1.21.0
 cffi==1.15.1
 pandas
 geobr
+geos
 matplotlib
 googletrends
 shapely
