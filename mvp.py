@@ -84,7 +84,7 @@ class GeoEstimation():
         },
         ax=ax,
     )
-    ax.set_title(f'Pesquisas por "{self.app}" no Google ({self.start_date} : {self.final_date})', fontsize=15)
+    ax.set_title(f'Pesquisas por "{self.app}"\nBrasil, ({self.start_date} ~ {self.final_date})', fontsize=15)
     ax.axis("off")
     #plt.savefig(f'maps/{self.app}_{self.country}_map.png')
     
@@ -149,13 +149,13 @@ class GeoEstimation():
             edgecolor='black',
             linewidth=0.3,
             legend_kwds={
-                "label": "Google Trend Index",
+                "label": "Intensidade das buscas",
                 "orientation": "horizontal",
                 "shrink": 0.6,
             },
             ax=ax,
         )
-        plt.title(f"Pesquisas por {self.app} no Google\n{estado}, {self.start_date} ~ {self.final_date}", fontsize=15)
+        plt.title(f"Pesquisas por {self.app}\n{estado}, {self.start_date} ~ {self.final_date}", fontsize=15)
         #plt.title(f'{estado}, {self.start_date} ~ {self.final_date}', fontsize=8)
         ax.axis("off")
         '''
