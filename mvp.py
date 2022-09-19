@@ -78,7 +78,7 @@ class GeoEstimation():
         edgecolor='black',
         linewidth=0.3,
         legend_kwds={
-            "label": "Google Trend Index",
+            "label": "Intensidade das buscas",
             "orientation": "horizontal",
             "shrink": 0.6,
         },
